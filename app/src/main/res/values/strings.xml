@@ -2,4 +2,9 @@
     <string name="app_name">PhotoRocket</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="action_newEvent">New Event</string>
+    <string name="action_event_detail">Event Detail</string>
+    <string name="action_camera">Camera</string>
+    <string name="title_activity_event_detail">EventDetailActivity</string>
+    <string name="title_activity_new_event">NewEventActivity</string>
 </resources>
