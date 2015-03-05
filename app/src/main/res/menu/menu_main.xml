@@ -7,4 +7,6 @@
         android:orderInCategory="300" app:showAsAction="never" />
     <item android:id="@+id/action_camera" android:title="@string/action_camera"
         android:orderInCategory="400" app:showAsAction="never" />
+    <item android:id="@+id/action_sync_events" android:title="@string/action_sync_events"
+        android:orderInCategory="500" app:showAsAction="never" />
 </menu>
