@@ -36,10 +36,6 @@ import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
 
-
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,19 +47,14 @@ public class MainActivity extends ActionBarActivity {
         }
         Log.d("parse","hello");
 
-
-
-//        ParseObject testObject = new ParseObject("TestObject");
-//        testObject.put("foo", "bar");
-//        testObject.put("author", ParseUser.getCurrentUser());
-//        testObject.saveInBackground();
+//        Uncomment this to add a new event
 //        Calendar c = Calendar.getInstance();
 //        Date now = c.getTime();
 //        c.roll(Calendar.HOUR,2);
 //        Date twoHoursLater = c.getTime();
-//        Event event = new Event("foo2",now,twoHoursLater);
-        //event.addUser(ParseUser.getCurrentUser());
-        //event.saveInBackground();
+//        Event event = new Event("Celtics Game",now,twoHoursLater);
+//        event.addParticipant(ParseUser.getCurrentUser());
+//        event.saveInBackground();
     }
 
     private void getAllEventsByCurrentUser(){
@@ -131,6 +122,19 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+    //Helper function to save photo
+    private void savePhoto(final String eventID, byte[] imageData) {
+        final ParseFile photoFile = new ParseFile("photo_0", imageData);
+        photoFile.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                Photo photo = new Photo(eventID,photoFile);
+                photo.saveInBackground();
+            }
+        });
+    }
+
+    //This is just for testing purpose, don't touch it
     class FetchAndUploadPhotoTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
@@ -144,7 +148,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     /*
-        Testing function to fill database
+        Testing function to fill database, testing purpose as well
      */
     public void uploadphoto() throws IOException {
 
@@ -190,6 +194,9 @@ public class MainActivity extends ActionBarActivity {
             eventListAdapter = new EventListAdapter(this.getActivity(),ParseUser.getCurrentUser());
             eventListAdapter.setTextKey(Event.NAME_KEY);
             ListView eventListView = (ListView) rootView.findViewById(R.id.listview_main);
+            if (eventListView == null){
+                Log.d("parse", "listView null");
+            }
             eventListView.setAdapter(eventListAdapter);
 
             eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import java.util.Date;
 
 
 public class NewEventActivity extends ActionBarActivity {
@@ -44,6 +45,12 @@ public class NewEventActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    //Helper function to save an Event
+    private void saveEvent(String eventName, Date startTime, Date endTime){
+        Event event = new Event(eventName,startTime,endTime);
+        event.saveInBackground();
     }
 
     /**

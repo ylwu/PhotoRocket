@@ -9,7 +9,6 @@ import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,8 +41,11 @@ public class EventDetailActivity extends ActionBarActivity {
         Intent intent = this.getIntent();
         if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)){
             eventID = intent.getStringExtra(Intent.EXTRA_TEXT);
+            Log.d("parse","eventID from list");
+            Log.d("parse", String.valueOf(eventID));
         } else {
             eventID = TEST_EVENT_ID;
+            Log.d("parse","didn't get event ID");
         }
 
         //put photosAdapter in a ListView or GridView
