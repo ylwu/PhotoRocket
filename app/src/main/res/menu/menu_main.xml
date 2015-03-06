@@ -9,4 +9,6 @@
         android:orderInCategory="400" app:showAsAction="never" />
     <item android:id="@+id/action_sync_events" android:title="@string/action_sync_events"
         android:orderInCategory="500" app:showAsAction="never" />
+    <item android:id="@+id/action_upload_photo" android:title="Upload photo"
+        android:orderInCategory="600" app:showAsAction="never" />
 </menu>

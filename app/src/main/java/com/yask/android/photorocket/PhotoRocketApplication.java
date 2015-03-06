@@ -21,6 +21,7 @@ public class PhotoRocketApplication extends Application{
         Log.d("parse", "start application");
 
         ParseObject.registerSubclass(Event.class);
+        ParseObject.registerSubclass(Photo.class);
         // Enable Local Datastore.
         Parse.enableLocalDatastore(this);
 
@@ -28,22 +29,6 @@ public class PhotoRocketApplication extends Application{
 
         if (ParseUser.getCurrentUser() == null){
             Log.d("parse user", "creating user for the first time");
-//            ParseUser.enableAutomaticUser();
-//            ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
-//                @Override
-//                public void done(ParseException e) {
-//                    ParseAnonymousUtils.logIn(new LogInCallback() {
-//                        @Override
-//                        public void done(ParseUser user, ParseException e) {
-//                            if (e != null) {
-//                                Log.d("MyApp", "Anonymous login failed.");
-//                            } else {
-//                                Log.d("MyApp", "Anonymous user logged in.");
-//                            }
-//                        }
-//                    });
-//                }
-//            });
             ParseAnonymousUtils.logIn(new LogInCallback() {
                 @Override
                 public void done(ParseUser user, ParseException e) {

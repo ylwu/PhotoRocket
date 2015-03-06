@@ -1,6 +1,7 @@
 package com.yask.android.photorocket;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
@@ -10,19 +11,34 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity {
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,13 +51,19 @@ public class MainActivity extends ActionBarActivity {
         }
         Log.d("parse","hello");
 
+
+
 //        ParseObject testObject = new ParseObject("TestObject");
 //        testObject.put("foo", "bar");
 //        testObject.put("author", ParseUser.getCurrentUser());
 //        testObject.saveInBackground();
-//        Event event = new Event("foo2");
-//        event.addUser(ParseUser.getCurrentUser());
-//        event.saveInBackground();
+//        Calendar c = Calendar.getInstance();
+//        Date now = c.getTime();
+//        c.roll(Calendar.HOUR,2);
+//        Date twoHoursLater = c.getTime();
+//        Event event = new Event("foo2",now,twoHoursLater);
+        //event.addUser(ParseUser.getCurrentUser());
+        //event.saveInBackground();
     }
 
     private void getAllEventsByCurrentUser(){
@@ -98,6 +120,9 @@ public class MainActivity extends ActionBarActivity {
         if (id == R.id.action_sync_events) {
             getAllEventsByCurrentUser();
         }
+        if (id == R.id.action_upload_photo) {
+            new FetchAndUploadPhotoTask().execute();
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -106,10 +131,54 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+    class FetchAndUploadPhotoTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                uploadphoto();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    /*
+        Testing function to fill database
+     */
+    public void uploadphoto() throws IOException {
+
+        DefaultHttpClient client = new DefaultHttpClient();
+        HttpGet request = new HttpGet("http://labs.yahoo.com/_c/uploads/fbentley/avatar/frankmot.jpg");
+        HttpResponse response = client.execute(request);
+        HttpEntity entity = response.getEntity();
+        int imageLength = (int)(entity.getContentLength());
+        InputStream is = entity.getContent();
+
+        byte[] imageBlob = new byte[imageLength];
+        int bytesRead = 0;
+        while (bytesRead < imageLength) {
+            int n = is.read(imageBlob, bytesRead, imageLength - bytesRead);
+            if (n <= 0)
+                ; // do some error handling
+            bytesRead += n;
+        }
+        final ParseFile photoFile = new ParseFile("Frank.jpg", imageBlob);
+        photoFile.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                Photo photo = new Photo(EventDetailActivity.TEST_EVENT_ID,photoFile);
+                photo.saveInBackground();
+            }
+        });
+
+    }
+
     /**
      * A placeholder fragment containing a simple view.
      */
     public static class PlaceholderFragment extends Fragment {
+        private EventListAdapter eventListAdapter;
 
         public PlaceholderFragment() {
         }
@@ -118,6 +187,20 @@ public class MainActivity extends ActionBarActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            eventListAdapter = new EventListAdapter(this.getActivity(),ParseUser.getCurrentUser());
+            eventListAdapter.setTextKey(Event.NAME_KEY);
+            ListView eventListView = (ListView) rootView.findViewById(R.id.listview_main);
+            eventListView.setAdapter(eventListAdapter);
+
+            eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Event event = eventListAdapter.getItem(position);
+                    Intent intent = new Intent(view.getContext(),EventDetailActivity.class)
+                            .putExtra(Intent.EXTRA_TEXT,event.getObjectId());
+                    startActivity(intent);
+                }
+            });
             return rootView;
         }
     }
