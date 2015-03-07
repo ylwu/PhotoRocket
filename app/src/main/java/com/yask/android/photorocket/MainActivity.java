@@ -119,7 +119,8 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void openCamera(){
-
+        Intent openCamera = new Intent(this, ActiveEventActivity.class);
+        startActivity(openCamera);
     }
 
     //Helper function to save photo
