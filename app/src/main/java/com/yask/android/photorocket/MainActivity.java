@@ -42,7 +42,9 @@ import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Date;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -121,7 +123,8 @@ public class MainActivity extends ActionBarActivity {
             startActivity(new Intent(this,NewEventActivity.class));
         }
         if (id == R.id.action_sync_events) {
-            getAllEventsByCurrentUser();
+            //getAllEventsByCurrentUser();
+            testGetEvent();
         }
         if (id == R.id.action_upload_photo) {
             new FetchAndUploadPhotoTask().execute();
@@ -130,7 +133,25 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
+    private void testGetEvent() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(0);
+        cal.set(2015,Calendar.MARCH,6,4,8,0);
+        Date d = cal.getTime();
+        Log.d("parse","test test");
+        String eventId = Utils.getEventIDForTime(d);
+        String toastString;
+        Log.d("parseTest", eventId);
+        if (eventId == null){
+            toastString = "No Event";
+        } else if (eventId == Utils.MORE_THAN_ONE_EVENT_ERROR){
+            toastString = Utils.MORE_THAN_ONE_EVENT_ERROR;
+        } else {
+            toastString = eventId;
+        }
+        Toast toast = Toast.makeText(getApplicationContext(),toastString,Toast.LENGTH_LONG);
+        toast.show();
+    }
 
     public void openCamera(){
 
