@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -88,6 +89,12 @@ public class ActiveEventActivity extends Activity {
                 try {
                     imageBitmap = MediaStore.Images.Media.getBitmap(cr, current_image_uri);
                     imageView.setImageBitmap(imageBitmap);
+
+                    //Convert bitmap to byte array
+                    int bytes = imageBitmap.getByteCount();
+                    ByteBuffer buffer = ByteBuffer.allocate(bytes);
+                    imageBitmap.copyPixelsToBuffer(buffer);
+                    byte[] imageArray = buffer.array();
                 } catch (Exception e){
                     Log.e("IMAGE_CAPTURE", e.toString());
                 }
