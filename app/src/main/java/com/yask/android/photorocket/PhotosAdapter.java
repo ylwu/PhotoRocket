@@ -1,7 +1,18 @@
 package com.yask.android.photorocket;
 
+import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Context;
+import android.util.DisplayMetrics;
+import android.view.Display;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.parse.ParseFile;
+import com.parse.ParseImageView;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
@@ -18,7 +29,32 @@ public class PhotosAdapter extends ParseQueryAdapter<Photo>{
                 return query;
             }
         });
+
     }
+    @Override
+    public View getItemView(Photo photo, View v, ViewGroup parent) {
+        if (v == null) {
+            v = View.inflate(getContext(), R.layout.photo_in_grid, null);
+        }
+        int columns = 3;
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        int picSize = displaymetrics.widthPixels / columns;
+
+        super.getItemView(photo, v, parent);
+
+        // Add and download the image
+        ParseImageView todoImage = (ParseImageView) v.findViewById(R.id.icon);
+        ParseFile imageFile = photo.getParseFile("content");
+        if (imageFile != null) {
+            todoImage.setParseFile(imageFile);
+            todoImage.loadInBackground();
+        }
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(picSize,picSize);
+        todoImage.setLayoutParams(layoutParams);
+        return v;
+    }
+
 
 
 }
