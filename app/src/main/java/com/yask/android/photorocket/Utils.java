@@ -1,8 +1,5 @@
 package com.yask.android.photorocket;
 
-import android.util.Log;
-
-import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -19,33 +16,32 @@ public class Utils {
 
     public static final String MORE_THAN_ONE_EVENT_ERROR = "more than one event";
 
-    public static String getEventIDForTime(Date d){
-        final List<Event> eventList = new ArrayList<Event>();
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Event");
-//        query.whereGreaterThanOrEqualTo(Event.STARTTIME_KEY,d);
-//        query.whereLessThanOrEqualTo(Event.ENDTIME_KEY,d);
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> parseObjects, ParseException e) {
-                if (e == null){
-                    for (ParseObject object : parseObjects){
-                        eventList.add((Event)object);
-                        Log.d("parse", "add new event");
-                    }
-                } else {
-                    Log.e("parse",e.getLocalizedMessage());
-                    Log.e("parse", "cannot retrieve events");
-                }
+    /*
+        WARNING: getEventIDForTime and getEventIDForNow needs to be called in background thread.
+        Calling in on mainthread will cause an error.
+        Example: mainActivity.CheckEventTask
 
+     */
+    public static String getEventIDForTime(Date d){
+        List<Event> eventList = new ArrayList<Event>();
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Event");
+        query.whereLessThanOrEqualTo(Event.STARTTIME_KEY,d);
+        query.whereGreaterThanOrEqualTo(Event.ENDTIME_KEY,d);
+        try {
+            List<ParseObject> objectList = query.find();
+            for (ParseObject parseObject: objectList){
+                eventList.add((Event)parseObject);
             }
-        });
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         if (eventList.size() == 0){
             return null;
         } else if (eventList.size() ==1){
             Event event = (Event)eventList.get(0);
             return event.getObjectId();
         } else {
-            return MORE_THAN_ONE_EVENT_ERROR;
+            return String.valueOf(eventList.size());
         }
     }
 

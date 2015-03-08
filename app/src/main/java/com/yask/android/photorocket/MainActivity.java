@@ -41,10 +41,10 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -124,33 +124,13 @@ public class MainActivity extends ActionBarActivity {
         }
         if (id == R.id.action_sync_events) {
             //getAllEventsByCurrentUser();
-            testGetEvent();
+            new CheckEventTask().execute();
         }
         if (id == R.id.action_upload_photo) {
             new FetchAndUploadPhotoTask().execute();
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void testGetEvent() {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(0);
-        cal.set(2015,Calendar.MARCH,6,4,8,0);
-        Date d = cal.getTime();
-        Log.d("parse","test test");
-        String eventId = Utils.getEventIDForTime(d);
-        String toastString;
-        Log.d("parseTest", eventId);
-        if (eventId == null){
-            toastString = "No Event";
-        } else if (eventId == Utils.MORE_THAN_ONE_EVENT_ERROR){
-            toastString = Utils.MORE_THAN_ONE_EVENT_ERROR;
-        } else {
-            toastString = eventId;
-        }
-        Toast toast = Toast.makeText(getApplicationContext(),toastString,Toast.LENGTH_LONG);
-        toast.show();
     }
 
     public void openCamera(){
@@ -167,6 +147,40 @@ public class MainActivity extends ActionBarActivity {
                 photo.saveInBackground();
             }
         });
+    }
+
+    /*
+        This is an asyncTask that checks if there is an event at a certain time. It calls
+        Utils.getEventIDForTime in background. It is a good model to follow for any tasks that need
+        to get current eventID first, since that needs to be done in background.
+     */
+
+    class CheckEventTask extends AsyncTask<Void,Void,String> {
+        @Override
+        protected String doInBackground(Void... params) {
+            Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+            cal.setTimeInMillis(0);
+            cal.set(2015, Calendar.MARCH, 6, 2, 9, 0);
+
+            Date d = cal.getTime();
+            Log.d("parseDate",d.toString());
+            Log.d("parse","test test");
+            return Utils.getEventIDForTime(d);
+        }
+
+        @Override
+        protected void onPostExecute(String eventId) {
+            String toastString;
+            if (eventId == null){
+                toastString = "No Event";
+            } else if (eventId == Utils.MORE_THAN_ONE_EVENT_ERROR){
+                toastString = Utils.MORE_THAN_ONE_EVENT_ERROR;
+            } else {
+                toastString = eventId;
+            }
+            Toast toast = Toast.makeText(getApplicationContext(),toastString,Toast.LENGTH_LONG);
+            toast.show();
+        }
     }
 
     //This is just for testing purpose, don't touch it
