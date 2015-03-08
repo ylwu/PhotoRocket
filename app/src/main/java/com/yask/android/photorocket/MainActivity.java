@@ -274,10 +274,11 @@ public class MainActivity extends ActionBarActivity {
 
                         ((MainActivity) getActivity()).savePhoto(EVENT_ID, imageArray);
 
+                        Log.d("SAVEED", "PHOTO_SAVED");
+
                     } catch (Exception e){
                         Log.e("IMAGE_CAPTURE", e.toString());
                     }
-
                 }
             }
         }
