@@ -37,14 +37,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.yask.android.photorocket.MainActivity" />
         </activity>
-        <activity
-            android:name=".ActiveEventActivity"
-            android:label="@string/title_activity_active_event"
-            android:parentActivityName=".MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yask.android.photorocket.MainActivity" />
-        </activity>
     </application>
 
 </manifest>
