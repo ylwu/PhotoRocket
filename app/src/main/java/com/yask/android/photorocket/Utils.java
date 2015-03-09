@@ -17,8 +17,10 @@ public class Utils {
     public static final String MORE_THAN_ONE_EVENT_ERROR = "more than one event";
 
     /*
-        WARNING: getEventIDForTime and getEventIDForNow needs to be called in background thread.
-        Calling in on mainthread will cause an error.
+        WARNING: getEventIDForTime, eventExistInTimeRange and getEventIDForNow needs to be called in background thread.
+        Calling in on mainthread will cause Networkonmainthread error. The reason is that making the query
+        in parse is a network event and may take long, so the UI shouldn't be frozen while waiting for
+        the result to come back.
         Example: mainActivity.CheckEventTask
 
      */
@@ -43,6 +45,20 @@ public class Utils {
         } else {
             return String.valueOf(eventList.size());
         }
+    }
+
+    public static boolean eventExistInTimeRange(Date startTime, Date endTime){
+        List<Event> eventList = new ArrayList<Event>();
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Event");
+        query.whereLessThanOrEqualTo(Event.STARTTIME_KEY,endTime);
+        query.whereGreaterThanOrEqualTo(Event.ENDTIME_KEY,startTime);
+        try {
+            List<ParseObject> objectList = query.find();
+            return  objectList.size() != 0;
+        } catch (ParseException e){
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public static final String getEventIDForNow(){
