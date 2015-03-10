@@ -11,4 +11,6 @@
         android:orderInCategory="500" app:showAsAction="never" />
     <item android:id="@+id/action_upload_photo" android:title="Upload photo"
         android:orderInCategory="600" app:showAsAction="never" />
+    <item android:id="@+id/action_clear_local_data" android:title="@string/action_clear_local_data"
+        android:orderInCategory="700" app:showAsAction="never" />
 </menu>

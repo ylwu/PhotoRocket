@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -113,9 +114,6 @@ public class MainActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_camera){
-            openCamera();
-        }
         if (id == R.id.action_event_detail){
             startActivity(new Intent(this,EventDetailActivity.class));
         }
@@ -129,25 +127,34 @@ public class MainActivity extends ActionBarActivity {
         if (id == R.id.action_upload_photo) {
             new FetchAndUploadPhotoTask().execute();
         }
+        if (id == R.id.action_clear_local_data) {
+            clearLocalData();
+        }
 
         return super.onOptionsItemSelected(item);
     }
 
-    public void openCamera(){
-
+    public void clearLocalData() {
+        ParseObject.unpinAllInBackground("Photo", new DeleteCallback() {
+            @Override
+            public void done(ParseException e) {
+                Log.e("parse", "cleared local data");
+            }
+        });
     }
 
     //Helper function to save photo
     protected void savePhoto(final String eventID, byte[] imageData) {
         final ParseFile photoFile = new ParseFile("photo_0", imageData);
-        photoFile.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                Photo photo = new Photo(eventID,photoFile);
-                photo.saveInBackground();
-            }
-        });
+        Photo photo = new Photo(eventID,photoFile);
+        photo.saveInBackground();
     }
+
+    protected void savePhotoLocally(final String eventID, String locaImageURI){
+        Photo photo = new Photo(eventID,locaImageURI);
+        photo.pinInBackground();
+    }
+
 
     /*
         This is an asyncTask that checks if there is an event at a certain time. It calls
@@ -220,14 +227,22 @@ public class MainActivity extends ActionBarActivity {
         photoFile.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
-                Photo photo = new Photo(EventDetailActivity.TEST_EVENT_ID,photoFile);
-                photo.saveInBackground();
+                if (e == null){
+                    Photo photo = new Photo(EventDetailActivity.TEST_EVENT_ID,photoFile);
+                    photo.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                Log.d("parse", "saved locally");
+                            } else {
+                                Log.e("parse", e.getLocalizedMessage());
+                            }
+                        }
+                    });
+                }
             }
         });
-
     }
-
-
 
     /**
      * A placeholder fragment containing a simple view.
@@ -307,7 +322,8 @@ public class MainActivity extends ActionBarActivity {
                         imageBitmap.copyPixelsToBuffer(buffer);
                         byte[] imageArray = buffer.array();
 
-                        ((MainActivity) getActivity()).savePhoto(EVENT_ID, imageArray);
+                        //((MainActivity) getActivity()).savePhoto(EVENT_ID, imageArray);
+                        ((MainActivity) getActivity()).savePhotoLocally(EVENT_ID,current_image_uri.toString());
 
                         Log.d("SAVEED", "PHOTO_SAVED");
 
