@@ -44,14 +44,18 @@ public class PhotosAdapter extends ParseQueryAdapter<Photo>{
         // Add and download the image
         ParseImageView todoImage = (ParseImageView) v.findViewById(R.id.icon);
         Log.d("parsePhotosApapter", "find a photo");
-        //if (photo.isSavedInCloud()){
+        if (photo.isSavedInCloud()){
             ParseFile imageFile = photo.getParseFile("content");
             Log.d("parsePhotosApapter", "find a saved photo");
             if (imageFile != null) {
                 todoImage.setParseFile(imageFile);
                 todoImage.loadInBackground();
             }
-        //}
+        } else {
+            // TODO: load photo from SD card
+            Log.d("parsePhotoURI", photo.getLocaUIRString());
+
+        }
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(picSize,picSize);
         todoImage.setLayoutParams(layoutParams);
         return v;

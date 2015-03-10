@@ -41,6 +41,7 @@ public class Photo extends ParseObject{
         } else {
             Bitmap imageBitmap = null;
             try {
+                Log.d("Photo URI", Uri.parse(getString(LOCAL_IMAGE_URI_KEY)).toString());
                 imageBitmap = MediaStore.Images.Media.getBitmap(cr.getContentResolver(),Uri.parse(getString(LOCAL_IMAGE_URI_KEY)));
             } catch (IOException e) {
                 e.printStackTrace();

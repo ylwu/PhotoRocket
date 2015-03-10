@@ -303,6 +303,7 @@ public class MainActivity extends ActionBarActivity {
 
                     // Retrieve image uri
                     Uri current_image_uri = imageUri;
+                    Log.d("ParseMainActivity", imageUri.toString());
                     this.getActivity().getContentResolver().notifyChange(current_image_uri, null);
 
                     //Put photo in image view
