@@ -3,6 +3,7 @@ package com.yask.android.photorocket;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -36,6 +37,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -138,11 +141,12 @@ public class MainActivity extends ActionBarActivity {
 
     //Helper function to save photo
     protected void savePhoto(final String eventID, byte[] imageData) {
-        final ParseFile photoFile = new ParseFile("photo_0", imageData);
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        final ParseFile photoFile = new ParseFile("IMG" + timeStamp + ".jpg", imageData);
         photoFile.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
-                Photo photo = new Photo(eventID,photoFile);
+                Photo photo = new Photo(eventID, photoFile);
                 photo.saveInBackground();
             }
         });
@@ -263,7 +267,8 @@ public class MainActivity extends ActionBarActivity {
                     Bitmap imageBitmap;
 
                     try {
-                        imageBitmap = MediaStore.Images.Media.getBitmap(cr, current_image_uri);
+//                        imageBitmap = MediaStore.Images.Media.getBitmap(cr, current_image_uri);
+                        imageBitmap = decodeFile( new File(current_image_uri.getPath()));
                         imageView.setImageBitmap(imageBitmap);
 
                         //Convert bitmap to byte array
@@ -272,9 +277,22 @@ public class MainActivity extends ActionBarActivity {
                         imageBitmap.copyPixelsToBuffer(buffer);
                         byte[] imageArray = buffer.array();
 
+
+                        int imageLength = imageBitmap.getByteCount();
+                        InputStream is = new FileInputStream(current_image_uri.getPath());
+
+                        byte[] imageBlob = new byte[imageLength];
+                        int bytesRead = 0;
+                        while (bytesRead < imageLength) {
+                            int n = is.read(imageBlob, bytesRead, imageLength - bytesRead);
+                            if (n <= 0)
+                                ; // do some error handling
+                            bytesRead += n;
+                        }
+
                         ((MainActivity) getActivity()).savePhoto(EVENT_ID, imageArray);
 
-                        Log.d("SAVEED", "PHOTO_SAVED");
+                        Log.e("SAVEED", "PHOTO_SAVED");
 
                     } catch (Exception e){
                         Log.e("IMAGE_CAPTURE", e.toString());
@@ -312,6 +330,29 @@ public class MainActivity extends ActionBarActivity {
             }
 
             return mediaFile;
+        }
+
+        private Bitmap decodeFile(File f){
+            try {
+                //Decode image size
+                BitmapFactory.Options o = new BitmapFactory.Options();
+                o.inJustDecodeBounds = true;
+                BitmapFactory.decodeStream(new FileInputStream(f),null,o);
+
+                //The new size we want to scale to
+                final int REQUIRED_SIZE=1200;
+
+                //Find the correct scale value. It should be the power of 2.
+                int scale=1;
+                while(o.outWidth/scale/2>=REQUIRED_SIZE && o.outHeight/scale/2>=REQUIRED_SIZE)
+                    scale*=2;
+
+                //Decode with inSampleSize
+                BitmapFactory.Options o2 = new BitmapFactory.Options();
+                o2.inSampleSize=scale;
+                return BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
+            } catch (FileNotFoundException e) {}
+            return null;
         }
     }
 }
