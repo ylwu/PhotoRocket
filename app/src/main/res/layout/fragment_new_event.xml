@@ -11,91 +11,84 @@
 
 
     <EditText
-        android:text="Enter the Name of the Event..."
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/eventName"
-        android:layout_gravity="center_horizontal"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:maxLines="1"
-        android:singleLine="true" />
-
-
-    <EditText
-        android:text="Start Date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="date"
-        android:ems="10"
-        android:id="@+id/startDate"
-        android:layout_below="@+id/eventName"
+        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="86dp"
-        android:layout_toStartOf="@+id/eventName"
-        android:layout_toLeftOf="@+id/eventName"
-        android:layout_alignRight="@+id/endDate"
-        android:layout_alignEnd="@+id/endDate" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:text="Event Name..." />
 
-    <EditText
-        android:text="End Date"
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="date"
-        android:ems="10"
-        android:id="@+id/endDate"
-        android:layout_below="@+id/startDate"
+        android:text="Create Event"
+        android:id="@+id/createButton"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:elegantTextHeight="false" />
-
-    <EditText
-        android:text="Start Time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="time"
-        android:ems="10"
-        android:id="@+id/startTime"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_above="@+id/endTime"
-        android:layout_centerHorizontal="true" />
-
-    <EditText
-        android:text="End Time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="time"
-        android:ems="10"
-        android:id="@+id/endTime"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignBottom="@+id/endDate"
-        android:layout_alignLeft="@+id/startTime"
-        android:layout_alignStart="@+id/startTime" />
+        android:layout_alignRight="@+id/eventName"
+        android:layout_alignEnd="@+id/eventName"
+        android:onClick=""/>
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
         android:ems="10"
-        android:id="@+id/email"
-        android:text="Invites..."
-        android:layout_below="@+id/endDate"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="118dp" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Create!"
-        android:id="@+id/createButton"
-        android:layout_alignParentBottom="true"
+        android:id="@+id/invites"
+        android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/endTime"
-        android:layout_alignEnd="@+id/endTime" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:text="Invites" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Start Date"
+        android:id="@+id/startDate"
+        android:layout_below="@+id/eventName"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="20dp"
+        android:onClick="showStartDatePickerDialog"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Start Time"
+        android:id="@+id/startTime"
+        android:layout_alignBottom="@+id/startDate"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:onClick="showStartTimePickerDialog"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="End Date"
+        android:id="@+id/endDate"
+        android:layout_below="@+id/startDate"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp"
+        android:onClick="showEndDatePickerDialog"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="End TIme"
+        android:id="@+id/endTime"
+        android:layout_alignBottom="@+id/endDate"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:onClick="showEndTimePickerDialog"/>
 </RelativeLayout>
