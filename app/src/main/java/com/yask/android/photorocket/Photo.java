@@ -25,6 +25,9 @@ public class Photo extends ParseObject{
     public final static String EVENT_ID_KEY = "eventID";
     public final static String IS_SAVED_INCLOUD_KEY = "isSavedInCloud";
     public final static String LOCAL_IMAGE_URI_KEY = "localImageURI";
+    public Photo () {
+
+    }
 
     public Photo(String eventId, String localImageURI) {
         put(EVENT_ID_KEY,eventId);
@@ -57,7 +60,7 @@ public class Photo extends ParseObject{
     }
 
     public void clearLocalURI() {
-        put(LOCAL_IMAGE_URI_KEY,null);
+        put(LOCAL_IMAGE_URI_KEY,"");
     }
 
     public void setLocalURI(String uriString){

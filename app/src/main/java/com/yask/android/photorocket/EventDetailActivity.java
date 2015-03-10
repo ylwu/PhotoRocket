@@ -62,29 +62,30 @@ public class EventDetailActivity extends ActionBarActivity {
         Log.d("parse", "load objects");
     }
 
-    private void loadPhotosFromParse(String eventID){
+    private void loadPhotosFromParse(String eventID) {
         ParseQuery query = new ParseQuery("Photo");
-        query.whereEqualTo(Photo.EVENT_ID_KEY,eventID);
+        query.whereEqualTo(Photo.EVENT_ID_KEY, eventID);
         query.findInBackground(new FindCallback<Photo>() {
             @Override
             public void done(List<Photo> photos, ParseException e) {
-                if (e == null){
+                if (e == null) {
+                    Log.d("PaseEventDetailActivity","loadphotos");
                     ParseObject.pinAllInBackground((List<Photo>) photos,
                             new SaveCallback() {
                                 @Override
                                 public void done(ParseException e) {
-                                    if (e == null){
-                                        if (!isFinishing()){
+                                    if (e == null) {
+                                        Log.d("PaseEventDetailActivity","savedtolocal");
+                                        if (!isFinishing()) {
                                             photosAdapter.loadObjects();
                                         }
-
                                     } else {
                                         Log.e("parse", "error pinning photos: " + e.getMessage());
                                     }
                                 }
                             });
                 } else {
-                    Log.e("parse", "LoadFromParse: Error finding photos: " + e.getMessage() );
+                    Log.e("parse", "LoadFromParse: Error finding photos: " + e.getMessage());
                 }
             }
         });
@@ -100,7 +101,7 @@ public class EventDetailActivity extends ActionBarActivity {
             public void done(List<Photo> photos, ParseException e) {
                 for (final Photo photo : photos){
                     final String uriString = photo.getLocaUIRString();
-                    final ParseFile photoFile = new ParseFile("photo", photo.getBytesData(getApplicationContext()));
+                    final ParseFile photoFile = new ParseFile("photo.jpg", photo.getBytesData(getApplicationContext()));
                     photoFile.saveInBackground(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {

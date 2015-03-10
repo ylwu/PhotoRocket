@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -124,8 +123,8 @@ public class MainActivity extends ActionBarActivity {
             //getAllEventsByCurrentUser();
             new CheckEventTask().execute();
         }
-        if (id == R.id.action_upload_photo) {
-            new FetchAndUploadPhotoTask().execute();
+        if (id == R.id.action_save_photo) {
+            new FetchAndSavePhotoLocallyTask().execute();
         }
         if (id == R.id.action_clear_local_data) {
             clearLocalData();
@@ -135,7 +134,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void clearLocalData() {
-        ParseObject.unpinAllInBackground("Photo", new DeleteCallback() {
+        Photo.unpinAllInBackground(new DeleteCallback() {
             @Override
             public void done(ParseException e) {
                 Log.e("parse", "cleared local data");
@@ -191,11 +190,11 @@ public class MainActivity extends ActionBarActivity {
     }
 
     //This is just for testing purpose, don't touch it
-    class FetchAndUploadPhotoTask extends AsyncTask<Void, Void, Void> {
+    class FetchAndSavePhotoLocallyTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                uploadphoto();
+                savephotoLocally();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -206,10 +205,10 @@ public class MainActivity extends ActionBarActivity {
     /*
         Testing function to fill database, testing purpose as well
      */
-    public void uploadphoto() throws IOException {
+    public void savephotoLocally() throws IOException {
 
         DefaultHttpClient client = new DefaultHttpClient();
-        HttpGet request = new HttpGet("http://labs.yahoo.com/_c/uploads/fbentley/avatar/frankmot.jpg");
+        HttpGet request = new HttpGet("http://www.theinquirer.net/IMG/726/297726/apple-watch-sports-band-white-540x334.png?1410346517");
         HttpResponse response = client.execute(request);
         HttpEntity entity = response.getEntity();
         int imageLength = (int)(entity.getContentLength());
@@ -223,13 +222,13 @@ public class MainActivity extends ActionBarActivity {
                 ; // do some error handling
             bytesRead += n;
         }
-        final ParseFile photoFile = new ParseFile("Frank.jpg", imageBlob);
+        final ParseFile photoFile = new ParseFile("iWatch.jpg", imageBlob);
         photoFile.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if (e == null){
                     Photo photo = new Photo(EventDetailActivity.TEST_EVENT_ID,photoFile);
-                    photo.saveInBackground(new SaveCallback() {
+                    photo.pinInBackground(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
                             if (e == null) {
@@ -307,14 +306,14 @@ public class MainActivity extends ActionBarActivity {
                     this.getActivity().getContentResolver().notifyChange(current_image_uri, null);
 
                     //Put photo in image view
-                    ImageView imageView = (ImageView) getView().findViewById(R.id.photo_view);
+                    //ImageView imageView = (ImageView) getView().findViewById(R.id.photo_view);
 
                     ContentResolver cr = this.getActivity().getContentResolver();
                     Bitmap imageBitmap;
 
                     try {
                         imageBitmap = MediaStore.Images.Media.getBitmap(cr, current_image_uri);
-                        imageView.setImageBitmap(imageBitmap);
+                        //imageView.setImageBitmap(imageBitmap);
 
                         //Convert bitmap to byte array
                         int bytes = imageBitmap.getByteCount();

@@ -3,6 +3,7 @@ package com.yask.android.photorocket;
 import android.app.Activity;
 import android.content.Context;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -42,13 +43,15 @@ public class PhotosAdapter extends ParseQueryAdapter<Photo>{
 
         // Add and download the image
         ParseImageView todoImage = (ParseImageView) v.findViewById(R.id.icon);
-        if (photo.isSavedInCloud()){
+        Log.d("parsePhotosApapter", "find a photo");
+        //if (photo.isSavedInCloud()){
             ParseFile imageFile = photo.getParseFile("content");
+            Log.d("parsePhotosApapter", "find a saved photo");
             if (imageFile != null) {
                 todoImage.setParseFile(imageFile);
                 todoImage.loadInBackground();
             }
-        }
+        //}
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(picSize,picSize);
         todoImage.setLayoutParams(layoutParams);
         return v;

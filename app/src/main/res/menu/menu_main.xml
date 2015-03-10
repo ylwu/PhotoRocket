@@ -9,7 +9,7 @@
         android:orderInCategory="400" app:showAsAction="never" />
     <item android:id="@+id/action_sync_events" android:title="@string/action_sync_events"
         android:orderInCategory="500" app:showAsAction="never" />
-    <item android:id="@+id/action_upload_photo" android:title="Upload photo"
+    <item android:id="@+id/action_save_photo" android:title="Save Photo locally"
         android:orderInCategory="600" app:showAsAction="never" />
     <item android:id="@+id/action_clear_local_data" android:title="@string/action_clear_local_data"
         android:orderInCategory="700" app:showAsAction="never" />
