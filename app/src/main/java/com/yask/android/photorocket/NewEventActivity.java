@@ -1,28 +1,33 @@
 package com.yask.android.photorocket;
 
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import java.util.Date;
-
-import android.support.v4.app.DialogFragment;
-import android.app.TimePickerDialog;
-import android.app.DatePickerDialog;
-import java.util.Calendar;
-import android.app.Dialog;
-import android.text.format.DateFormat;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.DatePicker;
-import android.app.Activity;
 
+import com.parse.ParseException;
+import com.parse.SaveCallback;
 
-
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 
 public class NewEventActivity extends ActionBarActivity{
@@ -66,7 +71,17 @@ public class NewEventActivity extends ActionBarActivity{
     //Helper function to save an Event
     private void saveEvent(String eventName, Date startTime, Date endTime){
         Event event = new Event(eventName,startTime,endTime);
-        event.saveInBackground();
+        Log.d("parse", "in saveevent method");
+        event.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null){
+                    Log.e("parse error",e.getLocalizedMessage());
+                } else {
+                    Log.d("parse", "saved event");
+                }
+            }
+        });
     }
 
     /**
@@ -308,11 +323,43 @@ public class NewEventActivity extends ActionBarActivity{
 //----------------------------------------------------------------------------------------------------
 // create event
     public void processCreate(View v){
+        View par = (View) v.getParent();
+
         if (startDt < 0 || startMin < 0 || endDt < 0 || endMin < 0){
             //invalid date / time
+            showDialog(v, "Invalid Date/Time", "Set a Date/Time");
         } else {
+            Calendar scal = new GregorianCalendar(startYr,startMn,startDt,startHr,startMin);
+            Date sd =  scal.getTime();
+            Calendar ecal = new GregorianCalendar(endYr,endMn,endDt,endHr,endMin);
+            Date ed =  ecal.getTime();
 
+            if (ed.before(sd)){
+                showDialog(v, "Invalid Date/Time", "End Time is before Start Time");
+            } else {
+                String nameStr = ((EditText) par.findViewById(R.id.eventName)).getText().toString();
+                if (nameStr.equals("")){
+                    showDialog(v, "Invalid Event Name", "Enter an event name");
+                } else {
+                    //call save
+                    saveEvent(nameStr, sd, ed);
+                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(i);
+                }
+            }
         }
+    }
+    public void showDialog (View v, String title, String message) {
+        new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // continue with delete
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
 }

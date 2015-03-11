@@ -19,7 +19,8 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:text="Event Name..." />
+        android:hint="Event Name..."
+        android:singleLine="true" />
 
     <Button
         android:layout_width="wrap_content"
@@ -31,7 +32,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignRight="@+id/eventName"
         android:layout_alignEnd="@+id/eventName"
-        android:onClick=""/>
+        android:onClick="processCreate"/>
 
     <EditText
         android:layout_width="wrap_content"
@@ -39,12 +40,13 @@
         android:inputType="textEmailAddress"
         android:ems="10"
         android:id="@+id/invites"
-        android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+        android:hint="Enter email of friends..."
+        android:layout_below="@+id/endDate"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:text="Invites" />
+        android:layout_marginTop="100dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
