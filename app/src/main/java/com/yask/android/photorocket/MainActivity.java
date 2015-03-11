@@ -19,10 +19,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -44,8 +44,10 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -114,9 +116,6 @@ public class MainActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_camera){
-            openCamera();
-        }
         if (id == R.id.action_event_detail){
             startActivity(new Intent(this,EventDetailActivity.class));
         }
@@ -124,19 +123,26 @@ public class MainActivity extends ActionBarActivity {
             startActivity(new Intent(this,NewEventActivity.class));
         }
         if (id == R.id.action_sync_events) {
-            getAllEventsByCurrentUser();
+            //getAllEventsByCurrentUser();
+            new CheckEventTask().execute();
         }
-        if (id == R.id.action_upload_photo) {
-            new FetchAndUploadPhotoTask().execute();
+        if (id == R.id.action_save_photo) {
+            new FetchAndSavePhotoLocallyTask().execute();
+        }
+        if (id == R.id.action_clear_local_data) {
+            clearLocalData();
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-
-
-    public void openCamera(){
-
+    public void clearLocalData() {
+        Photo.unpinAllInBackground(new DeleteCallback() {
+            @Override
+            public void done(ParseException e) {
+                Log.e("parse", "cleared local data");
+            }
+        });
     }
 
     //Helper function to save photo
@@ -148,16 +154,55 @@ public class MainActivity extends ActionBarActivity {
             public void done(ParseException e) {
                 Photo photo = new Photo(eventID, photoFile);
                 photo.saveInBackground();
+
+    }
+
+    protected void savePhotoLocally(final String eventID, String locaImageURI){
+        Photo photo = new Photo(eventID,locaImageURI);
+        photo.pinInBackground();
+    }
+
+
+    /*
+        This is an asyncTask that checks if there is an event at a certain time. It calls
+        Utils.getEventIDForTime in background. It is a good model to follow for any tasks that need
+        to get current eventID first, since that needs to be done in background.
+     */
+
+    class CheckEventTask extends AsyncTask<Void,Void,String> {
+        @Override
+        protected String doInBackground(Void... params) {
+            Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+            cal.setTimeInMillis(0);
+            cal.set(2015, Calendar.MARCH, 6, 2, 9, 0);
+
+            Date d = cal.getTime();
+            Log.d("parseDate",d.toString());
+            Log.d("parse","test test");
+            return Utils.getEventIDForTime(d);
+        }
+
+        @Override
+        protected void onPostExecute(String eventId) {
+            String toastString;
+            if (eventId == null){
+                toastString = "No Event";
+            } else if (eventId == Utils.MORE_THAN_ONE_EVENT_ERROR){
+                toastString = Utils.MORE_THAN_ONE_EVENT_ERROR;
+            } else {
+                toastString = eventId;
             }
-        });
+            Toast toast = Toast.makeText(getApplicationContext(),toastString,Toast.LENGTH_LONG);
+            toast.show();
+        }
     }
 
     //This is just for testing purpose, don't touch it
-    class FetchAndUploadPhotoTask extends AsyncTask<Void, Void, Void> {
+    class FetchAndSavePhotoLocallyTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                uploadphoto();
+                savephotoLocally();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -168,10 +213,10 @@ public class MainActivity extends ActionBarActivity {
     /*
         Testing function to fill database, testing purpose as well
      */
-    public void uploadphoto() throws IOException {
+    public void savephotoLocally() throws IOException {
 
         DefaultHttpClient client = new DefaultHttpClient();
-        HttpGet request = new HttpGet("http://labs.yahoo.com/_c/uploads/fbentley/avatar/frankmot.jpg");
+        HttpGet request = new HttpGet("http://www.theinquirer.net/IMG/726/297726/apple-watch-sports-band-white-540x334.png?1410346517");
         HttpResponse response = client.execute(request);
         HttpEntity entity = response.getEntity();
         int imageLength = (int)(entity.getContentLength());
@@ -185,18 +230,26 @@ public class MainActivity extends ActionBarActivity {
                 ; // do some error handling
             bytesRead += n;
         }
-        final ParseFile photoFile = new ParseFile("Frank.jpg", imageBlob);
+        final ParseFile photoFile = new ParseFile("iWatch.jpg", imageBlob);
         photoFile.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
-                Photo photo = new Photo(EventDetailActivity.TEST_EVENT_ID,photoFile);
-                photo.saveInBackground();
+                if (e == null){
+                    Photo photo = new Photo(EventDetailActivity.TEST_EVENT_ID,photoFile);
+                    photo.pinInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                Log.d("parse", "saved locally");
+                            } else {
+                                Log.e("parse", e.getLocalizedMessage());
+                            }
+                        }
+                    });
+                }
             }
         });
-
     }
-
-
 
     /**
      * A placeholder fragment containing a simple view.
@@ -258,18 +311,19 @@ public class MainActivity extends ActionBarActivity {
 
                     // Retrieve image uri
                     Uri current_image_uri = imageUri;
+                    Log.d("ParseMainActivity", imageUri.toString());
                     this.getActivity().getContentResolver().notifyChange(current_image_uri, null);
 
                     //Put photo in image view
-                    ImageView imageView = (ImageView) getView().findViewById(R.id.photo_view);
+                    //ImageView imageView = (ImageView) getView().findViewById(R.id.photo_view);
 
                     ContentResolver cr = this.getActivity().getContentResolver();
                     Bitmap imageBitmap;
 
                     try {
-//                        imageBitmap = MediaStore.Images.Media.getBitmap(cr, current_image_uri);
-                        imageBitmap = decodeFile( new File(current_image_uri.getPath()));
-                        imageView.setImageBitmap(imageBitmap);
+
+                        imageBitmap = MediaStore.Images.Media.getBitmap(cr, current_image_uri);
+                        //imageView.setImageBitmap(imageBitmap);
 
                         //Convert bitmap to byte array
                         int bytes = imageBitmap.getByteCount();
@@ -290,7 +344,8 @@ public class MainActivity extends ActionBarActivity {
                             bytesRead += n;
                         }
 
-                        ((MainActivity) getActivity()).savePhoto(EVENT_ID, imageArray);
+
+                        ((MainActivity) getActivity()).savePhotoLocally(EVENT_ID,current_image_uri.toString());
 
                         Log.e("SAVEED", "PHOTO_SAVED");
 

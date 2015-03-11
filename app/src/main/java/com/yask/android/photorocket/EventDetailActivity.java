@@ -1,25 +1,20 @@
 package com.yask.android.photorocket;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.Display;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
-import java.io.File;
-import java.util.ArrayList;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.SaveCallback;
+
 import java.util.List;
 
 
@@ -60,6 +55,81 @@ public class EventDetailActivity extends ActionBarActivity {
         super.onStart();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        photosAdapter.loadObjects();
+        Log.d("parse", "load objects");
+    }
+
+    private void loadPhotosFromParse(String eventID) {
+        ParseQuery query = new ParseQuery("Photo");
+        query.whereEqualTo(Photo.EVENT_ID_KEY, eventID);
+        query.findInBackground(new FindCallback<Photo>() {
+            @Override
+            public void done(List<Photo> photos, ParseException e) {
+                if (e == null) {
+                    Log.d("PaseEventDetailActivity","loadphotos");
+                    ParseObject.pinAllInBackground((List<Photo>) photos,
+                            new SaveCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    if (e == null) {
+                                        Log.d("PaseEventDetailActivity","savedtolocal");
+                                        if (!isFinishing()) {
+                                            photosAdapter.loadObjects();
+                                        }
+                                    } else {
+                                        Log.e("parse", "error pinning photos: " + e.getMessage());
+                                    }
+                                }
+                            });
+                } else {
+                    Log.e("parse", "LoadFromParse: Error finding photos: " + e.getMessage());
+                }
+            }
+        });
+    }
+
+    private void uploadPhotosToParse(String eventID){
+        ParseQuery query = new ParseQuery("Photo");
+        query.whereEqualTo(Photo.EVENT_ID_KEY,eventID);
+        query.whereEqualTo(Photo.IS_SAVED_INCLOUD_KEY,false);
+        query.fromLocalDatastore();
+        query.findInBackground(new FindCallback<Photo>() {
+            @Override
+            public void done(List<Photo> photos, ParseException e) {
+                for (final Photo photo : photos){
+                    final String uriString = photo.getLocaUIRString();
+                    final ParseFile photoFile = new ParseFile("photo.jpg", photo.getBytesData(getApplicationContext()));
+                    photoFile.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null){
+                                photo.clearLocalURI();
+                                photo.setContent(photoFile);
+                                photo.upLoadedToCloud();
+                                photo.saveInBackground(new SaveCallback() {
+                                    @Override
+                                    public void done(ParseException e) {
+                                        if (e == null){
+                                            Log.d("parse", "uploaded a photo");
+                                        } else {
+                                            Log.e("parse", "cannot upload the photo");
+                                            photo.setLocalURI(uriString);
+                                            photo.savedLocally();
+                                        }
+                                    }
+                                });
+                            } else {
+                                Log.e("parse", "cannot save ParseFile");
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
 
 
     @Override
@@ -77,8 +147,11 @@ public class EventDetailActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_load) {
+            loadPhotosFromParse(TEST_EVENT_ID);
+        }
+        if (id == R.id.action_upload){
+            uploadPhotosToParse(TEST_EVENT_ID);
         }
 
         return super.onOptionsItemSelected(item);

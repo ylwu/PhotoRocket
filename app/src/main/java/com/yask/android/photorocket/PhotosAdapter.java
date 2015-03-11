@@ -1,18 +1,15 @@
 package com.yask.android.photorocket;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.util.DisplayMetrics;
-import android.view.Display;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.parse.ParseFile;
 import com.parse.ParseImageView;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
@@ -26,6 +23,7 @@ public class PhotosAdapter extends ParseQueryAdapter<Photo>{
             public ParseQuery<Photo> create() {
                 ParseQuery query = new ParseQuery("Photo");
                 query.whereEqualTo(Photo.EVENT_ID_KEY,eventID);
+                query.fromLocalDatastore();
                 return query;
             }
         });
@@ -45,10 +43,18 @@ public class PhotosAdapter extends ParseQueryAdapter<Photo>{
 
         // Add and download the image
         ParseImageView todoImage = (ParseImageView) v.findViewById(R.id.icon);
-        ParseFile imageFile = photo.getParseFile("content");
-        if (imageFile != null) {
-            todoImage.setParseFile(imageFile);
-            todoImage.loadInBackground();
+        Log.d("parsePhotosApapter", "find a photo");
+        if (photo.isSavedInCloud()){
+            ParseFile imageFile = photo.getParseFile("content");
+            Log.d("parsePhotosApapter", "find a saved photo");
+            if (imageFile != null) {
+                todoImage.setParseFile(imageFile);
+                todoImage.loadInBackground();
+            }
+        } else {
+            // TODO: load photo from SD card
+            Log.d("parsePhotoURI", photo.getLocaUIRString());
+
         }
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(picSize,picSize);
         todoImage.setLayoutParams(layoutParams);
