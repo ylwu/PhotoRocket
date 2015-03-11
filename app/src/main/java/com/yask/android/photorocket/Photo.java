@@ -14,7 +14,8 @@ import com.parse.ParseUser;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.nio.ByteBuffer;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Created by ylwu on 3/5/15.
@@ -45,16 +46,39 @@ public class Photo extends ParseObject{
             try {
                 Log.d("Photo URI", Uri.parse(getString(LOCAL_IMAGE_URI_KEY)).toString());
                 imageBitmap = decodeFile(new File(Uri.parse(getString(LOCAL_IMAGE_URI_KEY)).getPath()));
-//                imageBitmap = MediaStore.Images.Media.getBitmap(cr.getContentResolver(),Uri.parse(getString(LOCAL_IMAGE_URI_KEY)));
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            //Convert bitmap to byte array
-            int bytes = imageBitmap.getByteCount();
-            ByteBuffer buffer = ByteBuffer.allocate(bytes);
-            imageBitmap.copyPixelsToBuffer(buffer);
-            byte[] imageArray = buffer.array();
+            File f = new File(Uri.parse(getString(LOCAL_IMAGE_URI_KEY)).getPath());
+            int imageLength = (int) f.length();
+
+            InputStream is = null;
+            try {
+                is = new FileInputStream(f);
+            } catch (FileNotFoundException e){
+
+            }
+            byte[] imageArray = new byte[imageLength];
+            int bytesRead = 0;
+            while (bytesRead < imageLength) {
+                int n = 0;
+                try {
+                    n = is.read(imageArray, bytesRead, imageLength - bytesRead);
+                } catch (IOException e){}
+                bytesRead += n;
+            }
+
             return imageArray;
+
+
+
+//            //Convert bitmap to byte array
+//            int bytes = imageBitmap.getByteCount();
+//            ByteBuffer buffer = ByteBuffer.allocate(bytes);
+//            imageBitmap.copyPixelsToBuffer(buffer);
+//            buffer.rewind();
+//            byte[] imageArray = buffer.array();
+//            return imageArray;
         }
         return null;
     }
@@ -116,8 +140,9 @@ public class Photo extends ParseObject{
             BitmapFactory.Options o2 = new BitmapFactory.Options();
             o2.inSampleSize=scale;
             return BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
-        } catch (FileNotFoundException e) {}
+        } catch (FileNotFoundException e) {
+            Log.e("ImageResize", "Could not resize image: " + e);
+        }
         return null;
     }
-
 }
