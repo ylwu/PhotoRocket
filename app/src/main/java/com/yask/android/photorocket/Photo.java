@@ -1,8 +1,6 @@
 package com.yask.android.photorocket;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
 
@@ -42,22 +40,18 @@ public class Photo extends ParseObject{
         if (getString(LOCAL_IMAGE_URI_KEY) == null){
             Log.d("parse","no local uri");
         } else {
-            Bitmap imageBitmap = null;
-            try {
-                Log.d("Photo URI", Uri.parse(getString(LOCAL_IMAGE_URI_KEY)).toString());
-                imageBitmap = decodeFile(new File(Uri.parse(getString(LOCAL_IMAGE_URI_KEY)).getPath()));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+
             File f = new File(Uri.parse(getString(LOCAL_IMAGE_URI_KEY)).getPath());
             int imageLength = (int) f.length();
 
             InputStream is = null;
+
             try {
                 is = new FileInputStream(f);
             } catch (FileNotFoundException e){
-
+                Log.d("PHOTO_GETBYTES", "File not found: " + e.toString());
             }
+
             byte[] imageArray = new byte[imageLength];
             int bytesRead = 0;
             while (bytesRead < imageLength) {
@@ -69,16 +63,6 @@ public class Photo extends ParseObject{
             }
 
             return imageArray;
-
-
-
-//            //Convert bitmap to byte array
-//            int bytes = imageBitmap.getByteCount();
-//            ByteBuffer buffer = ByteBuffer.allocate(bytes);
-//            imageBitmap.copyPixelsToBuffer(buffer);
-//            buffer.rewind();
-//            byte[] imageArray = buffer.array();
-//            return imageArray;
         }
         return null;
     }
@@ -120,29 +104,4 @@ public class Photo extends ParseObject{
     public ParseUser getAuthor() {return getParseUser(AUTHOR_KEY);}
 
     public String getEventID() {return getString(EVENT_ID_KEY);}
-
-    private Bitmap decodeFile(File f){
-        try {
-            //Decode image size
-            BitmapFactory.Options o = new BitmapFactory.Options();
-            o.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(new FileInputStream(f),null,o);
-
-            //The new size we want to scale to
-            final int REQUIRED_SIZE=1200;
-
-            //Find the correct scale value. It should be the power of 2.
-            int scale=1;
-            while(o.outWidth/scale/2>=REQUIRED_SIZE && o.outHeight/scale/2>=REQUIRED_SIZE)
-                scale*=2;
-
-            //Decode with inSampleSize
-            BitmapFactory.Options o2 = new BitmapFactory.Options();
-            o2.inSampleSize=scale;
-            return BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
-        } catch (FileNotFoundException e) {
-            Log.e("ImageResize", "Could not resize image: " + e);
-        }
-        return null;
-    }
 }
