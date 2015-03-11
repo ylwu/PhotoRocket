@@ -37,7 +37,7 @@ public class EventListAdapter extends ParseQueryAdapter<Event> {
                 Calendar c = Calendar.getInstance();
                 Date d = c.getTime();
                 if (occuring){
-                    ParseQuery query = new ParseQuery("Event");
+                    ParseQuery<Event> query = ParseQuery.getQuery("Event");
                     query.whereLessThanOrEqualTo(Event.STARTTIME_KEY,d);
                     query.whereGreaterThanOrEqualTo(Event.ENDTIME_KEY,d);
                     query.whereEqualTo(Event.PARTICIPANTS_KEY, ParseUser.getCurrentUser());
@@ -45,14 +45,14 @@ public class EventListAdapter extends ParseQueryAdapter<Event> {
                     query.fromLocalDatastore();
                     return query;
                 } else {
-                    ParseQuery beforeQuery = new ParseQuery("Event");
+                    ParseQuery<Event> beforeQuery = ParseQuery.getQuery("Event");
                     beforeQuery.whereLessThanOrEqualTo(Event.ENDTIME_KEY,d);
-                    ParseQuery afterQuery = new ParseQuery("Event");
+                    ParseQuery<Event> afterQuery = ParseQuery.getQuery("Event");
                     afterQuery.whereGreaterThanOrEqualTo(Event.STARTTIME_KEY,d);
-                    List<ParseQuery> queries = new ArrayList<ParseQuery>();
+                    List<ParseQuery<Event>> queries = new ArrayList<ParseQuery<Event>>();
                     queries.add(beforeQuery);
                     queries.add(afterQuery);
-                    ParseQuery joinedQuery = ParseQuery.or(queries);
+                    ParseQuery<Event> joinedQuery = ParseQuery.or(queries);
                     joinedQuery.whereEqualTo(Event.PARTICIPANTS_KEY, ParseUser.getCurrentUser());
                     joinedQuery.include(Event.PARTICIPANTS_KEY);
                     joinedQuery.fromLocalDatastore();

@@ -79,7 +79,7 @@ public class Photo extends ParseObject{
         put(LOCAL_IMAGE_URI_KEY,uriString);
     }
 
-    public String getLocaUIRString() {
+    public String getLocaURIString() {
         return getString(LOCAL_IMAGE_URI_KEY);
     }
 
