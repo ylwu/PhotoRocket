@@ -2,8 +2,8 @@ package com.yask.android.photorocket;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.util.Log;
 
 import com.parse.ParseClassName;
@@ -11,7 +11,9 @@ import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
-import java.io.IOException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.nio.ByteBuffer;
 
 /**
@@ -42,8 +44,9 @@ public class Photo extends ParseObject{
             Bitmap imageBitmap = null;
             try {
                 Log.d("Photo URI", Uri.parse(getString(LOCAL_IMAGE_URI_KEY)).toString());
-                imageBitmap = MediaStore.Images.Media.getBitmap(cr.getContentResolver(),Uri.parse(getString(LOCAL_IMAGE_URI_KEY)));
-            } catch (IOException e) {
+                imageBitmap = decodeFile(new File(Uri.parse(getString(LOCAL_IMAGE_URI_KEY)).getPath()));
+//                imageBitmap = MediaStore.Images.Media.getBitmap(cr.getContentResolver(),Uri.parse(getString(LOCAL_IMAGE_URI_KEY)));
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             //Convert bitmap to byte array
@@ -93,5 +96,28 @@ public class Photo extends ParseObject{
     public ParseUser getAuthor() {return getParseUser(AUTHOR_KEY);}
 
     public String getEventID() {return getString(EVENT_ID_KEY);}
+
+    private Bitmap decodeFile(File f){
+        try {
+            //Decode image size
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(new FileInputStream(f),null,o);
+
+            //The new size we want to scale to
+            final int REQUIRED_SIZE=1200;
+
+            //Find the correct scale value. It should be the power of 2.
+            int scale=1;
+            while(o.outWidth/scale/2>=REQUIRED_SIZE && o.outHeight/scale/2>=REQUIRED_SIZE)
+                scale*=2;
+
+            //Decode with inSampleSize
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize=scale;
+            return BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
+        } catch (FileNotFoundException e) {}
+        return null;
+    }
 
 }

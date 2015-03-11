@@ -15,6 +15,8 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 
@@ -101,7 +103,8 @@ public class EventDetailActivity extends ActionBarActivity {
             public void done(List<Photo> photos, ParseException e) {
                 for (final Photo photo : photos){
                     final String uriString = photo.getLocaUIRString();
-                    final ParseFile photoFile = new ParseFile("photo.jpg", photo.getBytesData(getApplicationContext()));
+                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                    final ParseFile photoFile = new ParseFile("IMG" + timeStamp + ".jpg", photo.getBytesData(getApplicationContext()));
                     photoFile.saveInBackground(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
