@@ -60,8 +60,8 @@ public class PhotosAdapter extends ParseQueryAdapter<Photo>{
         } else {
             //Magic number 7 is the amount of characters that needs to be truncated from the beginning of the URI to the actrual useful URI.
             //removes the 'file://' at the beginning of string.
-            File img = new File(photo.getLocaUIRString().substring(7));
-            System.out.println(photo.getLocaUIRString().substring(7));
+            File img = new File(photo.getLocaURIString().substring(7));
+            System.out.println(photo.getLocaURIString().substring(7));
             FileInputStream fis = null;
             try {
                 fis = new FileInputStream(img);
