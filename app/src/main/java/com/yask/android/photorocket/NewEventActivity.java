@@ -70,18 +70,27 @@ public class NewEventActivity extends ActionBarActivity{
     /*=*/ //use this to save event
     //Helper function to save an Event
     private void saveEvent(String eventName, Date startTime, Date endTime){
-        Event event = new Event(eventName,startTime,endTime);
-        Log.d("parse", "in saveevent method");
-        event.saveInBackground(new SaveCallback() {
+        final Event event = new Event(eventName,startTime,endTime);
+        //event is first saved locally and then saved in cloud
+        event.pinInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
-                if (e != null){
-                    Log.e("parse error",e.getLocalizedMessage());
-                } else {
-                    Log.d("parse", "saved event");
+                if (e == null){
+                    Log.d("parse NewEventActivity", "event saved locally");
+                    event.saveEventually(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e != null){
+                                Log.e("parse error",e.getLocalizedMessage());
+                            } else {
+                                Log.d("parse NewEventActivity", "event saved in cloud");
+                            }
+                        }
+                    });
                 }
             }
         });
+
     }
 
     /**
