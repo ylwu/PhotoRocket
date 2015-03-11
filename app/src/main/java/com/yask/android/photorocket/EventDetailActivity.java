@@ -102,7 +102,7 @@ public class EventDetailActivity extends ActionBarActivity {
             @Override
             public void done(List<Photo> photos, ParseException e) {
                 for (final Photo photo : photos){
-                    final String uriString = photo.getLocaUIRString();
+                    final String uriString = photo.getLocaURIString();
                     String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
                     final ParseFile photoFile = new ParseFile("IMG" + timeStamp + ".jpg", photo.getBytesData(getApplicationContext()));
                     photoFile.saveInBackground(new SaveCallback() {
