@@ -1,6 +1,5 @@
 package com.yask.android.photorocket;
 
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -41,7 +40,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -58,7 +56,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new NewEventActivity.PlaceholderFragment())
+                    .add(R.id.container, new PlaceholderFragment())
                     .commit();
         }
         Log.d("parse","hello");
@@ -313,47 +311,10 @@ public class MainActivity extends ActionBarActivity {
 
                     // Retrieve image uri
                     Uri current_image_uri = imageUri;
-                    Log.d("ParseMainActivity", imageUri.toString());
-                    this.getActivity().getContentResolver().notifyChange(current_image_uri, null);
 
-                    //Put photo in image view
-                    //ImageView imageView = (ImageView) getView().findViewById(R.id.photo_view);
+                    // Save to local Parse database
+                   ((MainActivity) getActivity()).savePhotoLocally(EVENT_ID,current_image_uri.toString());
 
-                    ContentResolver cr = this.getActivity().getContentResolver();
-                    Bitmap imageBitmap;
-
-                    try {
-
-                        imageBitmap = MediaStore.Images.Media.getBitmap(cr, current_image_uri);
-                        //imageView.setImageBitmap(imageBitmap);
-
-                        //Convert bitmap to byte array
-                        int bytes = imageBitmap.getByteCount();
-                        ByteBuffer buffer = ByteBuffer.allocate(bytes);
-                        imageBitmap.copyPixelsToBuffer(buffer);
-                        byte[] imageArray = buffer.array();
-
-
-                        int imageLength = imageBitmap.getByteCount();
-                        InputStream is = new FileInputStream(current_image_uri.getPath());
-
-                        byte[] imageBlob = new byte[imageLength];
-                        int bytesRead = 0;
-                        while (bytesRead < imageLength) {
-                            int n = is.read(imageBlob, bytesRead, imageLength - bytesRead);
-                            if (n <= 0)
-                                ; // do some error handling
-                            bytesRead += n;
-                        }
-
-
-                        ((MainActivity) getActivity()).savePhotoLocally(EVENT_ID,current_image_uri.toString());
-
-                        Log.e("SAVEED", "PHOTO_SAVED");
-
-                    } catch (Exception e){
-                        Log.e("IMAGE_CAPTURE", e.toString());
-                    }
                 }
             }
         }
