@@ -8,6 +8,8 @@
     <string name="action_event_detail">Event Detail</string>
     <string name="action_camera">Camera</string>
     <string name="action_sync_events">Sync Events</string>
+    <string name="action_load_photos">Download photos</string>
+    <string name="action_clear_local_data">Clear local data</string>
     <string name="title_activity_event_detail">EventDetailActivity</string>
     <string name="title_activity_new_event">NewEventActivity</string>
     <string name="parse_event_key_name">name</string>

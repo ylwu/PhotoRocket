@@ -1,24 +1,20 @@
 package com.yask.android.photorocket;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.Display;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.GridView;
 
-import java.io.File;
-import java.util.ArrayList;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.SaveCallback;
+
 import java.util.List;
 
 
@@ -34,7 +30,7 @@ public class EventDetailActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_detail);
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().add(R.id.container, (Fragment) new DetailFragment()).commit();
+//            getSupportFragmentManager().beginTransaction().add(R.id.container, (Fragment) new DetailFragment()).commit();
         }
         Intent intent = this.getIntent();
         if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)){
@@ -46,9 +42,93 @@ public class EventDetailActivity extends ActionBarActivity {
             Log.d("parse","didn't get event ID");
         }
 
-        //put photosAdapter in a ListView or GridView
-        photosAdapter = new PhotosAdapter(this,eventID);
+    }
 
+    @Override
+    protected void onStart(){
+        GridView gridView = (GridView) findViewById(R.id.gridView2);
+        //put photosAdapter in a ListView or GridView
+        photosAdapter = new PhotosAdapter(this,TEST_EVENT_ID);
+        System.out.println(photosAdapter==null);
+        System.out.println(gridView == null);
+        gridView.setAdapter(photosAdapter);
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        photosAdapter.loadObjects();
+        Log.d("parse", "load objects");
+    }
+
+    private void loadPhotosFromParse(String eventID) {
+        ParseQuery query = new ParseQuery("Photo");
+        query.whereEqualTo(Photo.EVENT_ID_KEY, eventID);
+        query.findInBackground(new FindCallback<Photo>() {
+            @Override
+            public void done(List<Photo> photos, ParseException e) {
+                if (e == null) {
+                    Log.d("PaseEventDetailActivity","loadphotos");
+                    ParseObject.pinAllInBackground((List<Photo>) photos,
+                            new SaveCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    if (e == null) {
+                                        Log.d("PaseEventDetailActivity","savedtolocal");
+                                        if (!isFinishing()) {
+                                            photosAdapter.loadObjects();
+                                        }
+                                    } else {
+                                        Log.e("parse", "error pinning photos: " + e.getMessage());
+                                    }
+                                }
+                            });
+                } else {
+                    Log.e("parse", "LoadFromParse: Error finding photos: " + e.getMessage());
+                }
+            }
+        });
+    }
+
+    private void uploadPhotosToParse(String eventID){
+        ParseQuery query = new ParseQuery("Photo");
+        query.whereEqualTo(Photo.EVENT_ID_KEY,eventID);
+        query.whereEqualTo(Photo.IS_SAVED_INCLOUD_KEY,false);
+        query.fromLocalDatastore();
+        query.findInBackground(new FindCallback<Photo>() {
+            @Override
+            public void done(List<Photo> photos, ParseException e) {
+                for (final Photo photo : photos){
+                    final String uriString = photo.getLocaUIRString();
+                    final ParseFile photoFile = new ParseFile("photo.jpg", photo.getBytesData(getApplicationContext()));
+                    photoFile.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null){
+                                photo.clearLocalURI();
+                                photo.setContent(photoFile);
+                                photo.upLoadedToCloud();
+                                photo.saveInBackground(new SaveCallback() {
+                                    @Override
+                                    public void done(ParseException e) {
+                                        if (e == null){
+                                            Log.d("parse", "uploaded a photo");
+                                        } else {
+                                            Log.e("parse", "cannot upload the photo");
+                                            photo.setLocalURI(uriString);
+                                            photo.savedLocally();
+                                        }
+                                    }
+                                });
+                            } else {
+                                Log.e("parse", "cannot save ParseFile");
+                            }
+                        }
+                    });
+                }
+            }
+        });
     }
 
 
@@ -67,123 +147,14 @@ public class EventDetailActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_load) {
+            loadPhotosFromParse(TEST_EVENT_ID);
+        }
+        if (id == R.id.action_upload){
+            uploadPhotosToParse(TEST_EVENT_ID);
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public class DetailFragment extends Fragment {
-
-        public DetailFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_event_detail, container, false);
-
-            return rootView;
-        }
-
-        @Override
-        public void onStart() {
-            File imageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath());
-            int imageCount = 0;
-            int columnCount = 0;
-            int columns = 3;
-            ImageView[] prevRow = new ImageView[columns];
-            ImageView[] currRow = new ImageView[columns];
-
-            Display display = getWindowManager().getDefaultDisplay();
-            int width = 300;
-            int height =300;
-
-            System.out.println("----------------------------------------------");
-
-            List<File> imageList = fileList(imageDir);
-            System.out.println("----------------------------------------------");
-
-            for (File image : imageList) {
-                System.out.println(image.toString());
-                if (image.isDirectory()) {
-                    continue;
-                }
-                if (imageCount >= 10){
-                    break;
-                }
-                imageCount += 1;
-                if (columnCount == 0) {
-                    currRow[columnCount] = createImageView(image, (RelativeLayout) findViewById(R.id.eventDetail), prevRow[columnCount], null, width, height);
-                    columnCount++;
-                } else {
-                    currRow[columnCount] = createImageView(image, (RelativeLayout) findViewById(R.id.eventDetail), prevRow[columnCount], currRow[columnCount - 1], width, height);
-                    columnCount++;
-                    if (columnCount == columns) {
-                        columnCount = 0;
-                        prevRow = currRow;
-                    }
-                }
-            }
-            super.onStart();
-        }
-
-        private int imageId = 100;
-
-
-        /*
-            returns all files at root directory recursively.
-         */
-        private List<File> fileList(File root){
-            List<File> fileList = new ArrayList<>();
-            fileListHelper(root, fileList);
-            return fileList;
-        }
-
-        private void fileListHelper(File root, List<File> fileList){
-            if (root.isDirectory()){
-                for(File file: root.listFiles()){
-                    if (file.isDirectory()){
-                        fileListHelper(file, fileList);
-                    } else {
-                        fileList.add(file);
-                    }
-                }
-            } else {
-                fileList.add(root);
-            }
-
-        }
-
-        private ImageView createImageView(File imageFile, RelativeLayout parentLayout, ImageView aboveView, ImageView leftView, int width, int height){
-            ImageView imageView = new ImageView(getBaseContext());
-            imageView.setId(imageId);
-            imageId ++;
-            Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
-            bitmap = Bitmap.createScaledBitmap(bitmap, 512, 512, true);
-            imageView.setImageBitmap(bitmap);
-            //bitMap.recycle();
-            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(width, height);
-            if (aboveView != null) {
-                System.out.println("this happened");
-                System.out.println(aboveView.getId());
-                layoutParams.addRule(RelativeLayout.BELOW, aboveView.getId());
-            } else {
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-            }
-            if (leftView != null) {
-                layoutParams.addRule(RelativeLayout.RIGHT_OF, leftView.getId());
-            } else {
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-
-            }
-            parentLayout.addView(imageView,layoutParams);
-            return imageView;
-        }
-
-    }
 }
