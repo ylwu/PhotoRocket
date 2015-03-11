@@ -58,7 +58,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+                    .add(R.id.container, new NewEventActivity.PlaceholderFragment())
                     .commit();
         }
         Log.d("parse","hello");
@@ -117,7 +117,7 @@ public class MainActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_event_detail){
-            startActivity(new Intent(this,EventDetailActivity.class));
+            startActivity(new Intent(this, EventDetailActivity.class));
         }
         if (id == R.id.action_newEvent){
             startActivity(new Intent(this,NewEventActivity.class));
@@ -155,6 +155,8 @@ public class MainActivity extends ActionBarActivity {
                 Photo photo = new Photo(eventID, photoFile);
                 photo.saveInBackground();
 
+            }
+        });
     }
 
     protected void savePhotoLocally(final String eventID, String locaImageURI){
