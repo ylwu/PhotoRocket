@@ -60,19 +60,18 @@ public class PhotosAdapter extends ParseQueryAdapter<Photo>{
         } else {
             //Magic number 7 is the amount of characters that needs to be truncated from the beginning of the URI to the actrual useful URI.
             //removes the 'file://' at the beginning of string.
-//            File img = new File(photo.getLocaUIRString().substring(7));
-//            System.out.println(photo.getLocaUIRString().substring(7));
-//            FileInputStream fis = null;
-//            try {
-//                fis = new FileInputStream(img);
-//            } catch (FileNotFoundException e) {
-//                e.printStackTrace();
-//            }
-//            System.out.println("found photo not saved");
-//            BitmapFactory.Options options=new BitmapFactory.Options();
-//            options.inSampleSize = 8;
-//            Bitmap bitmap = BitmapFactory.decodeStream(fis,null,options);
-            Bitmap bitmap = decodeFile(new File(photo.getLocaURIString()));
+            File img = new File(photo.getLocaURIString().substring(7));
+            System.out.println(photo.getLocaURIString().substring(7));
+            FileInputStream fis = null;
+            try {
+                fis = new FileInputStream(img);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            System.out.println("found photo not saved");
+            BitmapFactory.Options options=new BitmapFactory.Options();
+            options.inSampleSize = 8;
+            Bitmap bitmap = BitmapFactory.decodeStream(fis,null,options);
             todoImage.setImageBitmap(bitmap);
             todoImage.loadInBackground();
 
@@ -81,28 +80,4 @@ public class PhotosAdapter extends ParseQueryAdapter<Photo>{
         todoImage.setLayoutParams(layoutParams);
         return v;
     }
-
-    private Bitmap decodeFile(File f){
-        try {
-            //Decode image size
-            BitmapFactory.Options o = new BitmapFactory.Options();
-            o.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(new FileInputStream(f),null,o);
-
-            //The new size we want to scale to
-            final int REQUIRED_SIZE=1200;
-
-            //Find the correct scale value. It should be the power of 2.
-            int scale=1;
-            while(o.outWidth/scale/2>=REQUIRED_SIZE && o.outHeight/scale/2>=REQUIRED_SIZE)
-                scale*=2;
-
-            //Decode with inSampleSize
-            BitmapFactory.Options o2 = new BitmapFactory.Options();
-            o2.inSampleSize=scale;
-            return BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
-        } catch (FileNotFoundException e) {}
-        return null;
-    }
-
 }
