@@ -2,6 +2,8 @@ package com.yask.android.photorocket;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -12,6 +14,10 @@ import com.parse.ParseFile;
 import com.parse.ParseImageView;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 /**
  * Created by ylwu on 3/5/15.
@@ -52,8 +58,22 @@ public class PhotosAdapter extends ParseQueryAdapter<Photo>{
                 todoImage.loadInBackground();
             }
         } else {
-            // TODO: load photo from SD card
-            Log.d("parsePhotoURI", photo.getLocaUIRString());
+            //Magic number 7 is the amount of characters that needs to be truncated from the beginning of the URI to the actrual useful URI.
+            //removes the 'file://' at the beginning of string.
+            File img = new File(photo.getLocaUIRString().substring(7));
+            System.out.println(photo.getLocaUIRString().substring(7));
+            FileInputStream fis = null;
+            try {
+                fis = new FileInputStream(img);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            System.out.println("found photo not saved");
+            BitmapFactory.Options options=new BitmapFactory.Options();
+            options.inSampleSize = 8;
+            Bitmap bitmap = BitmapFactory.decodeStream(fis,null,options);
+            todoImage.setImageBitmap(bitmap);
+            todoImage.loadInBackground();
 
         }
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(picSize,picSize);

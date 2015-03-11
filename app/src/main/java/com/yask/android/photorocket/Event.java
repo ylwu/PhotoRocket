@@ -5,8 +5,9 @@ import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by ylwu on 3/4/15.
@@ -31,6 +32,11 @@ public class Event extends ParseObject {
         put(PARTICIPANTS_KEY,participants);
         put(STARTTIME_KEY,startTime);
         put(ENDTIME_KEY,endTime);
+    }
+
+    public boolean isOccuring(){
+        Calendar c = Calendar.getInstance();
+        return c.after(getDate(STARTTIME_KEY)) && c.before(getDate(ENDTIME_KEY));
     }
 
     public Date getStartTime() {return getDate(STARTTIME_KEY);}

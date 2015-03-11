@@ -37,7 +37,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -68,25 +67,30 @@ public class MainActivity extends ActionBarActivity {
 //        event.saveInBackground();
     }
 
-    private void getAllEventsByCurrentUser(){
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Event");
+    /*
+        Download events from cloud and save to local database
+     */
+    private void syncEventsByCurrentUser(){
+        ParseQuery<Event> query = new ParseQuery<Event>("Event");
         Log.d("parse",ParseUser.getCurrentUser().getUsername());
         query.whereEqualTo("participants", ParseUser.getCurrentUser());
         query.include("participants");
-        final List<Event> eventList = new ArrayList<Event>();
-        query.findInBackground(new FindCallback<ParseObject>() {
+        query.findInBackground(new FindCallback<Event>() {
             @Override
-            public void done(List<ParseObject> parseObjects, ParseException e) {
+            public void done(List<Event> events, ParseException e) {
                 if (e == null){
-                    for (ParseObject object : parseObjects){
-                        eventList.add((Event)object);
-                        Log.d("parse", "add once");
-                    }
-                    Toast toast = Toast.makeText(getApplicationContext(),
-                            String.valueOf(eventList.size()),Toast.LENGTH_SHORT);
-                    toast.show();
+                    ParseObject.pinAllInBackground(events,new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null){
+                                Log.d("parse MainActivity", "synced events");
+                            } else {
+                                Log.e("parse MainActivity", e.getLocalizedMessage());
+                            }
+                        }
+                    });
                 } else {
-                    Log.e("parse",e.getLocalizedMessage());
+                    Log.e("parse", e.getLocalizedMessage());
                     Log.e("parse", "cannot retrieve events");
                 }
 
@@ -117,8 +121,7 @@ public class MainActivity extends ActionBarActivity {
             startActivity(new Intent(this,NewEventActivity.class));
         }
         if (id == R.id.action_sync_events) {
-            //getAllEventsByCurrentUser();
-            new CheckEventTask().execute();
+            syncEventsByCurrentUser();
         }
         if (id == R.id.action_save_photo) {
             new FetchAndSavePhotoLocallyTask().execute();
@@ -309,7 +312,7 @@ public class MainActivity extends ActionBarActivity {
                     Uri current_image_uri = imageUri;
 
                     // Save to local Parse database
-                   ((MainActivity) getActivity()).savePhotoLocally(EVENT_ID,current_image_uri.toString());
+                   ((MainActivity) getActivity()).savePhotoLocally(EVENT_ID, current_image_uri.toString());
 
                 }
             }

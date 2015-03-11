@@ -42,29 +42,5 @@ public class PhotoRocketApplication extends Application{
         } else {
             Log.d("parse user", "getting anoynymous user from app");
         }
-
-//        if (ParseUser.getCurrentUser() == null){
-//            Log.d("parse","create new user");
-//            ParseUser user = new ParseUser();
-//            Time t = new Time();
-//            t.setToNow();
-//            user.setUsername(t.toString());
-//            user.setPassword("my pass");
-//            user.signUpInBackground(new SignUpCallback() {
-//                public void done(ParseException e) {
-//                    if (e == null) {
-//                        // Hooray! Let them use the app now.
-//                        Log.d("parse","signup succeed");
-//                    } else {
-//                        // Sign up didn't succeed. Look at the ParseException
-//                        // to figure out what went wrong
-//                        Log.d("parse", "signup failed");
-//                        Log.d("parse",e.getLocalizedMessage());
-//                    }
-//                }
-//            });
-//        } else {
-//            Log.d("parse","load old user");
-//        }
     }
 }
