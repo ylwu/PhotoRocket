@@ -1,6 +1,10 @@
 package com.yask.android.photorocket;
 
 import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
@@ -16,7 +20,9 @@ import java.util.List;
  */
 public class EventListAdapter extends ParseQueryAdapter<Event> {
 
-    public EventListAdapter(Context context, ParseUser user){
+    MainActivity.MainMenuFragment main_menu_fragment;
+
+    public EventListAdapter(Context context, ParseUser user, MainActivity.MainMenuFragment fragment){
         super (context,new QueryFactory<Event>() {
             @Override
             public ParseQuery<Event> create() {
@@ -28,6 +34,8 @@ public class EventListAdapter extends ParseQueryAdapter<Event> {
                 return query;
             }
         });
+
+        main_menu_fragment = fragment;
     }
 
     public EventListAdapter(Context context, ParseUser user, final boolean occuring){
@@ -61,4 +69,36 @@ public class EventListAdapter extends ParseQueryAdapter<Event> {
             }
         });
     }
+
+    @Override
+    public View getItemView(Event event, View view, ViewGroup parent){
+
+        if (event.isOccuring()){
+            view = View.inflate(getContext(), R.layout.list_view_active_event, null);
+            TextView event_name_text_view = (TextView) view.findViewById(R.id.event_name_view);
+            TextView event_time_view = (TextView) view.findViewById(R.id.event_time_view);
+            ImageView camera_icon = (ImageView) view.findViewById(R.id.camera_button_view);
+
+            event_name_text_view.setText(event.getEventName());
+            event_time_view.setText("09:00 - 21:00"); // Set event time range
+
+            camera_icon.setClickable(true);
+            camera_icon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    main_menu_fragment.takePhoto();
+                }
+            });
+
+        } else {
+            view = View.inflate(getContext(), R.layout.list_view_event_inactive, null);
+            TextView event_name_text_view = (TextView) view.findViewById(R.id.event_name_view);
+            TextView event_time_view = (TextView) view.findViewById(R.id.event_time_view);
+
+            event_name_text_view.setText(event.getEventName());
+            event_time_view.setText("09:00, 22nd June"); // Set event start date
+        }
+
+        return view;
+    };
 }

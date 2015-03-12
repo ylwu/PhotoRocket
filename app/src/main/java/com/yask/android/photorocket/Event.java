@@ -56,4 +56,8 @@ public class Event extends ParseObject {
         participants.add(user);
         put(PARTICIPANTS_KEY,participants);
     }
+
+    public String getEventName(){
+        return getString(NAME_KEY);
+    }
 }

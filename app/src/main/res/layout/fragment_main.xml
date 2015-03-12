@@ -1,61 +1,30 @@
-<ScrollView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    >
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context=".MainActivity$PlaceholderFragment">
-
-    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/camera_button"
-                android:src="@drawable/camera_icon" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="28sp"
-                    android:paddingBottom="5dp"
-                    android:text= "@string/name_of_active_event"
-                    />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/status_active"
-                    android:textSize="28sp"
-                    android:textColor="#76EE00"
-                    />
-            </LinearLayout>
-
-        </LinearLayout>
+            android:textSize="30sp"
+            android:id="@+id/title_label"
+            android:text="Events"
+            android:layout_centerHorizontal="true"/>
 
         <ListView
             android:layout_width="match_parent"
-            android:layout_height="295dp"
+            android:layout_height="400dp"
             android:id="@+id/listview_main"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_below="@id/title_label"/>
+
+        <ImageButton
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/plus_icon"
+            android:layout_below="@+id/listview_main"
+            android:paddingTop="10dp"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/add_new_event_button"/>
+ </RelativeLayout>
 
 
-    </LinearLayout>
-</ScrollView>

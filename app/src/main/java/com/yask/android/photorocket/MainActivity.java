@@ -51,10 +51,10 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+                    .add(R.id.container, new MainMenuFragment())
                     .commit();
         }
-        Log.d("parse","hello");
+        Log.e("parse","HELLO");
 
 
 //        Uncomment this to add a new event
@@ -103,6 +103,8 @@ public class MainActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        Log.e("parse","Menu Options");
+
         return true;
     }
 
@@ -253,7 +255,7 @@ public class MainActivity extends ActionBarActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
+    public static class MainMenuFragment extends Fragment {
 
         private EventListAdapter eventListAdapter;
 
@@ -264,16 +266,18 @@ public class MainActivity extends ActionBarActivity {
         private static final String EVENT_ID = "yorLShkZPR";
         private Uri imageUri;
 
-        public PlaceholderFragment() {
+        public MainMenuFragment() {
+
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            eventListAdapter = new EventListAdapter(this.getActivity(),ParseUser.getCurrentUser());
+            eventListAdapter = new EventListAdapter(this.getActivity(),ParseUser.getCurrentUser(), MainMenuFragment.this);
             eventListAdapter.setTextKey(Event.NAME_KEY);
-            ListView eventListView = (ListView) rootView.findViewById(R.id.listview_main);
+            final ListView eventListView = (ListView) rootView.findViewById(R.id.listview_main);
             if (eventListView == null){
                 Log.d("parse", "listView null");
             }
@@ -288,12 +292,13 @@ public class MainActivity extends ActionBarActivity {
                     startActivity(intent);
                 }
             });
-            // Camera stuff
-            ImageButton camera_button = (ImageButton) rootView.findViewById(R.id.camera_button);
-            camera_button.setOnClickListener(new View.OnClickListener() {
+
+            ImageButton add_new_event_button = (ImageButton) rootView.findViewById(R.id.add_new_event_button);
+
+            add_new_event_button.setOnClickListener(new View.OnClickListener(){
                 @Override
-                public void onClick(View v) {
-                    takePhoto(v);
+                public void onClick(View v){
+                    startActivity(new Intent(v.getContext(), NewEventActivity.class));
                 }
             });
 
@@ -312,16 +317,15 @@ public class MainActivity extends ActionBarActivity {
                     Uri current_image_uri = imageUri;
 
                     // Save to local Parse database
-                   ((MainActivity) getActivity()).savePhotoLocally(EVENT_ID, current_image_uri.toString());
+                    ((MainActivity) getActivity()).savePhotoLocally(EVENT_ID, current_image_uri.toString());
 
                 }
             }
         }
 
-        private void takePhoto(View v){
+        public void takePhoto(){
             Intent open_camera_intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             imageUri = Uri.fromFile(createImageFolder(MEDIA_TYPE_IMAGE));
-
             open_camera_intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
             startActivityForResult(open_camera_intent, CAPTURE_IMAGE_REQUEST_CODE);
         }
