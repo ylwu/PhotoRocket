@@ -18,6 +18,7 @@ import com.parse.ParseQueryAdapter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.text.ParseException;
 
 /**
  * Created by ylwu on 3/5/15.
@@ -54,8 +55,15 @@ public class PhotosAdapter extends ParseQueryAdapter<Photo>{
             ParseFile imageFile = photo.getParseFile("content");
             Log.d("parsePhotosApapter", "find a saved photo");
             if (imageFile != null) {
-                todoImage.setParseFile(imageFile);
-                todoImage.loadInBackground();
+                BitmapFactory.Options options=new BitmapFactory.Options();
+                options.inSampleSize = 3;
+                try {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(imageFile.getData(), 0, imageFile.getData().length, options);
+                    todoImage.setImageBitmap(bitmap);
+                    todoImage.loadInBackground();
+                } catch( com.parse.ParseException e) {
+                    e.printStackTrace();
+                }
             }
         } else {
             //Magic number 7 is the amount of characters that needs to be truncated from the beginning of the URI to the actrual useful URI.
