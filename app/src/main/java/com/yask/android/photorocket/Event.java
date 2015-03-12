@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * Created by ylwu on 3/4/15.
@@ -19,7 +20,8 @@ public class Event extends ParseObject {
     public static final String PARTICIPANTS_KEY = "participants";
     public static final String STARTTIME_KEY = "startTime";
     public static final String ENDTIME_KEY = "endTime";
-
+    public static final String ID_TEXT = "eventID";
+    public static final String ISOCCURING_TEXT = "isOccuring";
 
     public Event(){
 
@@ -36,7 +38,11 @@ public class Event extends ParseObject {
 
     public boolean isOccuring(){
         Calendar c = Calendar.getInstance();
-        return c.after(getDate(STARTTIME_KEY)) && c.before(getDate(ENDTIME_KEY));
+        Calendar startTime = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+        Calendar endTime = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+        startTime.setTime(getDate(STARTTIME_KEY));
+        endTime.setTime(getDate(ENDTIME_KEY));
+        return c.after(startTime) && c.before(endTime);
     }
 
     public Date getStartTime() {return getDate(STARTTIME_KEY);}

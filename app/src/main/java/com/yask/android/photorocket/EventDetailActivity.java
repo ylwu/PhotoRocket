@@ -26,6 +26,7 @@ public class EventDetailActivity extends ActionBarActivity {
 
     private PhotosAdapter photosAdapter;
     private String eventID;
+    private boolean isOccuring;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +36,12 @@ public class EventDetailActivity extends ActionBarActivity {
 //            getSupportFragmentManager().beginTransaction().add(R.id.container, (Fragment) new DetailFragment()).commit();
         }
         Intent intent = this.getIntent();
-        if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)){
-            eventID = intent.getStringExtra(Intent.EXTRA_TEXT);
+        if (intent != null && intent.hasExtra(Event.ID_TEXT)){
+            eventID = intent.getStringExtra(Event.ID_TEXT);
+            isOccuring = intent.getBooleanExtra(Event.ISOCCURING_TEXT,false);
             Log.d("parse","eventID from list");
             Log.d("parse", String.valueOf(eventID));
+            Log.d("parse event occruing?", String.valueOf(isOccuring));
         } else {
             eventID = TEST_EVENT_ID;
             Log.d("parse","didn't get event ID");
@@ -151,10 +154,10 @@ public class EventDetailActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_load) {
-            loadPhotosFromParse(TEST_EVENT_ID);
+            loadPhotosFromParse(eventID);
         }
         if (id == R.id.action_upload){
-            uploadPhotosToParse(TEST_EVENT_ID);
+            uploadPhotosToParse(eventID);
         }
 
         return super.onOptionsItemSelected(item);

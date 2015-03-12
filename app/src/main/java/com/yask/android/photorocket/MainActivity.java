@@ -54,7 +54,7 @@ public class MainActivity extends ActionBarActivity {
                     .add(R.id.container, new MainMenuFragment())
                     .commit();
         }
-        Log.e("parse","HELLO");
+        Log.e("parse", "HELLO");
 
 
 //        Uncomment this to add a new event
@@ -103,7 +103,7 @@ public class MainActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        Log.e("parse","Menu Options");
+        Log.d("parse","Menu Options");
 
         return true;
     }
@@ -270,6 +270,7 @@ public class MainActivity extends ActionBarActivity {
 
         }
 
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
@@ -289,7 +290,7 @@ public class MainActivity extends ActionBarActivity {
                     Event event = eventListAdapter.getItem(position);
                     EVENT_ID = event.getObjectId();
                     Intent intent = new Intent(view.getContext(),EventDetailActivity.class)
-                            .putExtra(Intent.EXTRA_TEXT, event.getObjectId());
+                            .putExtra(Event.ID_TEXT,event.getObjectId()).putExtra(Event.ISOCCURING_TEXT,event.isOccuring());
                     startActivity(intent);
                 }
             });
@@ -314,14 +315,21 @@ public class MainActivity extends ActionBarActivity {
                     // Image captured and saved
                     Toast.makeText(getActivity(), "Image saved!", Toast.LENGTH_LONG).show();
 
-                    // Retrieve image uri
+                    // Retrieve imagfe uri
                     Uri current_image_uri = imageUri;
 
                     // Save to local Parse database
                     ((MainActivity) getActivity()).savePhotoLocally(EVENT_ID, current_image_uri.toString());
+                    Log.d("saved photo", current_image_uri.toString());
 
                 }
             }
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+            eventListAdapter.loadObjects();
         }
 
         public void takePhoto(){
