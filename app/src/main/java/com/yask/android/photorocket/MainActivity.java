@@ -263,7 +263,7 @@ public class MainActivity extends ActionBarActivity {
         private static final int MEDIA_TYPE_IMAGE = 1;
         private static final int MEDIA_TYPE_VIDEO = 2;
         private static final int CAPTURE_IMAGE_REQUEST_CODE = 1993;
-        private static final String EVENT_ID = "yorLShkZPR";
+        public static String EVENT_ID;
         private Uri imageUri;
 
         public MainMenuFragment() {
@@ -287,8 +287,9 @@ public class MainActivity extends ActionBarActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Event event = eventListAdapter.getItem(position);
+                    EVENT_ID = event.getObjectId();
                     Intent intent = new Intent(view.getContext(),EventDetailActivity.class)
-                            .putExtra(Intent.EXTRA_TEXT,event.getObjectId());
+                            .putExtra(Intent.EXTRA_TEXT, event.getObjectId());
                     startActivity(intent);
                 }
             });

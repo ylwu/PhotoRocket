@@ -29,6 +29,7 @@ public class EventListAdapter extends ParseQueryAdapter<Event> {
                 ParseQuery query = new ParseQuery("Event");
                 query.whereEqualTo(Event.PARTICIPANTS_KEY, ParseUser.getCurrentUser());
                 query.include(Event.PARTICIPANTS_KEY);
+                query.orderByAscending(Event.STARTTIME_KEY);
                 //loading event from local database
                 query.fromLocalDatastore();
                 return query;
@@ -73,6 +74,8 @@ public class EventListAdapter extends ParseQueryAdapter<Event> {
     @Override
     public View getItemView(Event event, View view, ViewGroup parent){
 
+        final Event current_event = event;
+
         if (event.isOccuring()){
             view = View.inflate(getContext(), R.layout.list_view_active_event, null);
             TextView event_name_text_view = (TextView) view.findViewById(R.id.event_name_view);
@@ -82,13 +85,17 @@ public class EventListAdapter extends ParseQueryAdapter<Event> {
             event_name_text_view.setText(event.getEventName());
             event_time_view.setText("09:00 - 21:00"); // Set event time range
 
+
             camera_icon.setClickable(true);
             camera_icon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    MainActivity.MainMenuFragment.EVENT_ID = current_event.getObjectId(); // Set event ID
                     main_menu_fragment.takePhoto();
                 }
             });
+
+
 
         } else {
             view = View.inflate(getContext(), R.layout.list_view_event_inactive, null);

@@ -50,7 +50,7 @@ public class EventDetailActivity extends ActionBarActivity {
     protected void onStart(){
         GridView gridView = (GridView) findViewById(R.id.gridView2);
         //put photosAdapter in a ListView or GridView
-        photosAdapter = new PhotosAdapter(this,TEST_EVENT_ID);
+        photosAdapter = new PhotosAdapter(this, eventID);
         System.out.println(photosAdapter==null);
         System.out.println(gridView == null);
         gridView.setAdapter(photosAdapter);
