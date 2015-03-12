@@ -10,10 +10,12 @@ import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 import com.parse.ParseUser;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by ylwu on 3/5/15.
@@ -75,6 +77,7 @@ public class EventListAdapter extends ParseQueryAdapter<Event> {
     public View getItemView(Event event, View view, ViewGroup parent){
 
         final Event current_event = event;
+        SimpleDateFormat dateformat = new SimpleDateFormat("K:mm a, LLL dd", Locale.US);
 
         if (event.isOccuring()){
             view = View.inflate(getContext(), R.layout.list_view_active_event, null);
@@ -83,7 +86,7 @@ public class EventListAdapter extends ParseQueryAdapter<Event> {
             ImageView camera_icon = (ImageView) view.findViewById(R.id.camera_button_view);
 
             event_name_text_view.setText(event.getEventName());
-            event_time_view.setText("09:00 - 21:00"); // Set event time range
+            event_time_view.setText("until " + dateformat.format(event.getEndTime())); // Set event time range
 
 
             camera_icon.setClickable(true);
@@ -103,7 +106,7 @@ public class EventListAdapter extends ParseQueryAdapter<Event> {
             TextView event_time_view = (TextView) view.findViewById(R.id.event_time_view);
 
             event_name_text_view.setText(event.getEventName());
-            event_time_view.setText("09:00, 22nd June"); // Set event start date
+            event_time_view.setText(dateformat.format(event.getStartTime())); // Set event start date
         }
 
         return view;
