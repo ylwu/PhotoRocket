@@ -23,14 +23,18 @@ import java.util.Locale;
 public class EventListAdapter extends ParseQueryAdapter<Event> {
 
     MainActivity.MainMenuFragment main_menu_fragment;
+    PastEventsActivity.PastEventsFragment past_events_fragment;
 
     public EventListAdapter(Context context, ParseUser user, MainActivity.MainMenuFragment fragment){
         super (context,new QueryFactory<Event>() {
             @Override
             public ParseQuery<Event> create() {
+                Calendar c = Calendar.getInstance();
+                Date d = c.getTime();
                 ParseQuery query = new ParseQuery("Event");
                 query.whereEqualTo(Event.PARTICIPANTS_KEY, ParseUser.getCurrentUser());
                 query.include(Event.PARTICIPANTS_KEY);
+                query.whereGreaterThanOrEqualTo(Event.ENDTIME_KEY, d);
                 query.orderByAscending(Event.STARTTIME_KEY);
                 //loading event from local database
                 query.fromLocalDatastore();
@@ -39,6 +43,26 @@ public class EventListAdapter extends ParseQueryAdapter<Event> {
         });
 
         main_menu_fragment = fragment;
+    }
+
+    public EventListAdapter(Context context, ParseUser user, PastEventsActivity.PastEventsFragment fragment){
+        super (context,new QueryFactory<Event>() {
+            @Override
+            public ParseQuery<Event> create() {
+                Calendar c = Calendar.getInstance();
+                Date d = c.getTime();
+                ParseQuery query = new ParseQuery("Event");
+                query.whereEqualTo(Event.PARTICIPANTS_KEY, ParseUser.getCurrentUser());
+                query.include(Event.PARTICIPANTS_KEY);
+                query.whereLessThan(Event.ENDTIME_KEY, d);
+                query.orderByDescending(Event.ENDTIME_KEY);
+                //loading event from local database
+                query.fromLocalDatastore();
+                return query;
+            }
+        });
+
+        past_events_fragment = fragment;
     }
 
     public EventListAdapter(Context context, ParseUser user, final boolean occuring){
@@ -98,15 +122,27 @@ public class EventListAdapter extends ParseQueryAdapter<Event> {
                 }
             });
 
-
-
         } else {
-            view = View.inflate(getContext(), R.layout.list_view_event_inactive, null);
-            TextView event_name_text_view = (TextView) view.findViewById(R.id.event_name_view);
-            TextView event_time_view = (TextView) view.findViewById(R.id.event_time_view);
+            Calendar c = Calendar.getInstance();
+            Date d = c.getTime();
 
-            event_name_text_view.setText(event.getEventName());
-            event_time_view.setText(dateformat.format(event.getStartTime())); // Set event start date
+            if (current_event.getEndTime().before(d)){
+                SimpleDateFormat dateformatPast = new SimpleDateFormat("LLLL dd", Locale.US);
+                view = View.inflate(getContext(), R.layout.list_view_event_over, null);
+                TextView event_name_text_view = (TextView) view.findViewById(R.id.event_name_view);
+                TextView event_time_view = (TextView) view.findViewById(R.id.event_time_view);
+
+                event_name_text_view.setText(event.getEventName());
+                event_time_view.setText(dateformatPast.format(event.getStartTime())); // Set event start date
+
+            } else {
+                view = View.inflate(getContext(), R.layout.list_view_event_inactive, null);
+                TextView event_name_text_view = (TextView) view.findViewById(R.id.event_name_view);
+                TextView event_time_view = (TextView) view.findViewById(R.id.event_time_view);
+
+                event_name_text_view.setText(event.getEventName());
+                event_time_view.setText(dateformat.format(event.getStartTime())); // Set event start date
+            }
         }
 
         return view;

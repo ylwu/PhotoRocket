@@ -304,6 +304,15 @@ public class MainActivity extends ActionBarActivity {
                 }
             });
 
+            ImageButton past_event_button = (ImageButton) rootView.findViewById(R.id.history_button);
+
+            past_event_button.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v){
+                    startActivity(new Intent(v.getContext(), PastEventsActivity.class));
+                }
+            });
+
             return rootView;
         }
 
