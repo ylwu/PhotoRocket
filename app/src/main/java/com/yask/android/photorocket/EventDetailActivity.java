@@ -26,7 +26,7 @@ public class EventDetailActivity extends ActionBarActivity {
 
     private PhotosAdapter photosAdapter;
     private String eventID;
-    private boolean isOccuring;
+    private boolean isFuture;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +38,10 @@ public class EventDetailActivity extends ActionBarActivity {
         Intent intent = this.getIntent();
         if (intent != null && intent.hasExtra(Event.ID_TEXT)){
             eventID = intent.getStringExtra(Event.ID_TEXT);
-            isOccuring = intent.getBooleanExtra(Event.ISOCCURING_TEXT,false);
+            isFuture = intent.getBooleanExtra(Event.ISFUTURE_TEXT,false);
             Log.d("parse","eventID from list");
             Log.d("parse", String.valueOf(eventID));
-            Log.d("parse event occruing?", String.valueOf(isOccuring));
+            Log.d("parse event in future?", String.valueOf(isFuture));
         } else {
             eventID = TEST_EVENT_ID;
             Log.d("parse","didn't get event ID");

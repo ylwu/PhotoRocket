@@ -276,7 +276,7 @@ public class MainActivity extends ActionBarActivity {
                                  Bundle savedInstanceState) {
 
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            eventListAdapter = new EventListAdapter(this.getActivity(),ParseUser.getCurrentUser(), MainMenuFragment.this);
+            eventListAdapter = new EventListAdapter(this.getActivity(), MainMenuFragment.this, false);
             eventListAdapter.setTextKey(Event.NAME_KEY);
             final ListView eventListView = (ListView) rootView.findViewById(R.id.listview_main);
             if (eventListView == null){
@@ -290,7 +290,7 @@ public class MainActivity extends ActionBarActivity {
                     Event event = eventListAdapter.getItem(position);
                     EVENT_ID = event.getObjectId();
                     Intent intent = new Intent(view.getContext(),EventDetailActivity.class)
-                            .putExtra(Event.ID_TEXT,event.getObjectId()).putExtra(Event.ISOCCURING_TEXT,event.isOccuring());
+                            .putExtra(Event.ID_TEXT,event.getObjectId()).putExtra(Event.ISFUTURE_TEXT,event.isFuture());
                     startActivity(intent);
                 }
             });

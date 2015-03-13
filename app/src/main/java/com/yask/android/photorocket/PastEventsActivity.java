@@ -13,8 +13,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.parse.ParseUser;
-
 
 public class PastEventsActivity extends ActionBarActivity {
 
@@ -69,7 +67,7 @@ public class PastEventsActivity extends ActionBarActivity {
                                  Bundle savedInstanceState) {
 
             View rootView = inflater.inflate(R.layout.fragment_past_events, container, false);
-            eventListAdapter = new EventListAdapter(this.getActivity(), ParseUser.getCurrentUser(), PastEventsFragment.this);
+            eventListAdapter = new EventListAdapter(this.getActivity(),PastEventsFragment.this,true);
             eventListAdapter.setTextKey(Event.NAME_KEY);
             final ListView eventListView = (ListView) rootView.findViewById(R.id.listview_past_events);
             if (eventListView == null){
@@ -82,7 +80,7 @@ public class PastEventsActivity extends ActionBarActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Event event = eventListAdapter.getItem(position);
                     Intent intent = new Intent(view.getContext(),EventDetailActivity.class)
-                            .putExtra(Event.ID_TEXT,event.getObjectId()).putExtra(Event.ISOCCURING_TEXT,event.isOccuring());
+                            .putExtra(Event.ID_TEXT,event.getObjectId()).putExtra(Event.ISFUTURE_TEXT,event.isFuture());
                     startActivity(intent);
                 }
             });
