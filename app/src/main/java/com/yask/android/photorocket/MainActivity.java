@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -309,7 +310,17 @@ public class MainActivity extends ActionBarActivity {
             past_event_button.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v){
-                    startActivity(new Intent(v.getContext(), PastEventsActivity.class));
+                // Create new fragment and transaction
+                Fragment newFragment = new PastEventsFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+                // Replace whatever is in the fragment_container view with this fragment,
+                // and add the transaction to the back stack
+                transaction.replace(R.id.container, newFragment);
+                transaction.addToBackStack(null);
+
+                // Commit the transaction
+                transaction.commit();
                 }
             });
 
@@ -369,6 +380,50 @@ public class MainActivity extends ActionBarActivity {
             }
 
             return mediaFile;
+        }
+    }
+
+    /**
+     * A placeholder fragment containing a simple view.
+     */
+    public static class PastEventsFragment extends Fragment {
+
+        private EventListAdapter eventListAdapter;
+
+        public PastEventsFragment() {
+
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+
+            View rootView = inflater.inflate(R.layout.fragment_past_events, container, false);
+            eventListAdapter = new EventListAdapter(this.getActivity(),PastEventsFragment.this,true);
+            eventListAdapter.setTextKey(Event.NAME_KEY);
+            final ListView eventListView = (ListView) rootView.findViewById(R.id.listview_past_events);
+            if (eventListView == null){
+                Log.d("parse", "listView null");
+            }
+            eventListView.setAdapter(eventListAdapter);
+
+            eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Event event = eventListAdapter.getItem(position);
+                    Intent intent = new Intent(view.getContext(),EventDetailActivity.class)
+                            .putExtra(Event.ID_TEXT,event.getObjectId()).putExtra(Event.ISFUTURE_TEXT,event.isFuture());
+                    startActivity(intent);
+                }
+            });
+
+            return rootView;
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+            eventListAdapter.loadObjects();
         }
     }
 }

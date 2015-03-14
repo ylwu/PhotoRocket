@@ -38,10 +38,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.yask.android.photorocket.MainActivity" />
         </activity>
-        <activity
-            android:name=".PastEventsActivity"
-            android:label="@string/title_activity_past_events" >
-        </activity>
     </application>
 
 </manifest>
