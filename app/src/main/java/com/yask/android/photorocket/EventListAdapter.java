@@ -21,49 +21,7 @@ import java.util.Locale;
  */
 public class EventListAdapter extends ParseQueryAdapter<Event> {
 
-//    MainActivity.MainMenuFragment main_menu_fragment;
-//    PastEventsActivity.PastEventsFragment past_events_fragment;
     Fragment eventFragment;
-
-//    public EventListAdapter(Context context, ParseUser user, MainActivity.MainMenuFragment fragment){
-//        super (context,new QueryFactory<Event>() {
-//            @Override
-//            public ParseQuery<Event> create() {
-//                Calendar c = Calendar.getInstance();
-//                Date d = c.getTime();
-//                ParseQuery query = new ParseQuery("Event");
-//                query.whereEqualTo(Event.PARTICIPANTS_KEY, ParseUser.getCurrentUser());
-//                query.include(Event.PARTICIPANTS_KEY);
-//                query.whereGreaterThanOrEqualTo(Event.ENDTIME_KEY, d);
-//                query.orderByAscending(Event.STARTTIME_KEY);
-//                //loading event from local database
-//                query.fromLocalDatastore();
-//                return query;
-//            }
-//        });
-//
-//        main_menu_fragment = fragment;
-//    }
-//
-//    public EventListAdapter(Context context, ParseUser user, PastEventsActivity.PastEventsFragment fragment){
-//        super (context,new QueryFactory<Event>() {
-//            @Override
-//            public ParseQuery<Event> create() {
-//                Calendar c = Calendar.getInstance();
-//                Date d = c.getTime();
-//                ParseQuery query = new ParseQuery("Event");
-//                query.whereEqualTo(Event.PARTICIPANTS_KEY, ParseUser.getCurrentUser());
-//                query.include(Event.PARTICIPANTS_KEY);
-//                query.whereLessThan(Event.ENDTIME_KEY, d);
-//                query.orderByDescending(Event.ENDTIME_KEY);
-//                //loading event from local database
-//                query.fromLocalDatastore();
-//                return query;
-//            }
-//        });
-//
-//        past_events_fragment = fragment;
-//    }
 
     public EventListAdapter(Context context, Fragment fragment, final boolean isPast){
         super (context,new QueryFactory<Event>() {
@@ -89,38 +47,6 @@ public class EventListAdapter extends ParseQueryAdapter<Event> {
         });
         eventFragment = fragment;
     }
-
-//    public EventListAdapter(Context context, ParseUser user, final boolean occuring){
-//        super (context,new QueryFactory<Event>() {
-//            @Override
-//            public ParseQuery<Event> create() {
-//                Calendar c = Calendar.getInstance();
-//                Date d = c.getTime();
-//                if (occuring){
-//                    ParseQuery<Event> query = ParseQuery.getQuery("Event");
-//                    query.whereLessThanOrEqualTo(Event.STARTTIME_KEY,d);
-//                    query.whereGreaterThanOrEqualTo(Event.ENDTIME_KEY,d);
-//                    query.whereEqualTo(Event.PARTICIPANTS_KEY, ParseUser.getCurrentUser());
-//                    query.include(Event.PARTICIPANTS_KEY);
-//                    query.fromLocalDatastore();
-//                    return query;
-//                } else {
-//                    ParseQuery<Event> beforeQuery = ParseQuery.getQuery("Event");
-//                    beforeQuery.whereLessThanOrEqualTo(Event.ENDTIME_KEY,d);
-//                    ParseQuery<Event> afterQuery = ParseQuery.getQuery("Event");
-//                    afterQuery.whereGreaterThanOrEqualTo(Event.STARTTIME_KEY,d);
-//                    List<ParseQuery<Event>> queries = new ArrayList<ParseQuery<Event>>();
-//                    queries.add(beforeQuery);
-//                    queries.add(afterQuery);
-//                    ParseQuery<Event> joinedQuery = ParseQuery.or(queries);
-//                    joinedQuery.whereEqualTo(Event.PARTICIPANTS_KEY, ParseUser.getCurrentUser());
-//                    joinedQuery.include(Event.PARTICIPANTS_KEY);
-//                    joinedQuery.fromLocalDatastore();
-//                    return joinedQuery;
-//                }
-//            }
-//        });
-//    }
 
     @Override
     public View getItemView(Event event, View view, ViewGroup parent){
