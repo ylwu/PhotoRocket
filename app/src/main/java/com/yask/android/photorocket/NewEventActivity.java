@@ -350,7 +350,7 @@ public class NewEventActivity extends ActionBarActivity{
             final Date currd = Calendar.getInstance().getTime();
 
             if (sd.before(currd)){
-                showDialog(v, "Invalid Date/Time", "Start Time is before Current Time");
+                showDialog(v, "Invalid Date/Time", "Start Time is at/before Current Time");
             } else if (ed.before(sd)){
                 showDialog(v, "Invalid Date/Time", "End Time is before Start Time");
             } else {
