@@ -32,6 +32,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignRight="@+id/eventName"
         android:layout_alignEnd="@+id/eventName"
+        android:clickable="true"
         android:onClick="processCreate"/>
 
     <EditText
@@ -44,7 +45,7 @@
         android:layout_below="@+id/endDate"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="40dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -58,6 +59,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="20dp"
+        android:clickable="true"
         android:onClick="showStartDatePickerDialog"/>
 
     <TextView
@@ -69,6 +71,7 @@
         android:layout_alignBottom="@+id/startDate"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
+        android:clickable="true"
         android:onClick="showStartTimePickerDialog"/>
 
     <TextView
@@ -77,11 +80,12 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="End Date"
         android:id="@+id/endDate"
+        android:layout_marginTop="20dp"
+        android:clickable="true"
+        android:onClick="showEndDatePickerDialog"
         android:layout_below="@+id/startDate"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp"
-        android:onClick="showEndDatePickerDialog"/>
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -92,5 +96,6 @@
         android:layout_alignBottom="@+id/endDate"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
+        android:clickable="true"
         android:onClick="showEndTimePickerDialog"/>
 </RelativeLayout>
