@@ -266,6 +266,7 @@ public class MainActivity extends ActionBarActivity {
         private static final int CAPTURE_IMAGE_REQUEST_CODE = 1993;
         public static String EVENT_ID;
         private Uri imageUri;
+        private boolean isPast;
 
         public MainMenuFragment() {
 
@@ -414,6 +415,17 @@ public class MainActivity extends ActionBarActivity {
                     Intent intent = new Intent(view.getContext(),EventDetailActivity.class)
                             .putExtra(Event.ID_TEXT,event.getObjectId()).putExtra(Event.ISFUTURE_TEXT,event.isFuture());
                     startActivity(intent);
+                }
+            });
+
+            ImageButton back_button = (ImageButton) rootView.findViewById(R.id.back_button);
+            back_button.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v){
+                    Fragment newFragment = new MainMenuFragment();
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.replace(R.id.container, newFragment);
+                    transaction.commit();
                 }
             });
 
