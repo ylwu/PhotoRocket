@@ -118,7 +118,9 @@ public class NewEventActivity extends ActionBarActivity{
 
 
     public void showStartTimePickerDialog(View v) {
-        DialogFragment newFragment = new StartTimePickerFragment(v);
+        Log.d("showstarttime", "here");
+        StartTimePickerFragment newFragment = new StartTimePickerFragment();
+        newFragment.setV(v);
         newFragment.show(getSupportFragmentManager(), "timePicker");
     }
 
@@ -127,13 +129,14 @@ public class NewEventActivity extends ActionBarActivity{
 
         private View v;
 
-        public StartTimePickerFragment(View v){
-            super();
+        public void setV(View v){
             this.v = v;
         }
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+            Log.d("starttimedialog", "here");
             // Use the current time as the default values for the picker
             final Calendar c = Calendar.getInstance();
             int hour = c.get(Calendar.HOUR_OF_DAY);
@@ -145,6 +148,7 @@ public class NewEventActivity extends ActionBarActivity{
         }
 
         public void onTimeSet(TimePicker view, int hr, int min) {
+            Log.d("onstarttimeset", "here");
             TextView st = (TextView) v.findViewById(R.id.startTime);
             startHr = hr;
             startMin = min;
@@ -170,7 +174,8 @@ public class NewEventActivity extends ActionBarActivity{
 
 
     public void showEndTimePickerDialog(View v) {
-        DialogFragment newFragment = new EndTimePickerFragment(v);
+        EndTimePickerFragment newFragment = new EndTimePickerFragment();
+        newFragment.setV(v);
         newFragment.show(getSupportFragmentManager(), "timePicker");
     }
 
@@ -179,8 +184,7 @@ public class NewEventActivity extends ActionBarActivity{
 
         private View v;
 
-        public EndTimePickerFragment(View v){
-            super();
+        public void setV(View v){
             this.v = v;
         }
 
@@ -223,7 +227,8 @@ public class NewEventActivity extends ActionBarActivity{
 
 
     public void showStartDatePickerDialog(View v) {
-        DialogFragment newFragment = new StartDatePickerFragment(v);
+        StartDatePickerFragment newFragment = new StartDatePickerFragment();
+        newFragment.setV(v);
         newFragment.show(getSupportFragmentManager(), "timePicker");
     }
 
@@ -232,8 +237,7 @@ public class NewEventActivity extends ActionBarActivity{
 
         private View v;
 
-        public StartDatePickerFragment(View v){
-            super();
+        public void setV(View v){
             this.v = v;
         }
 
@@ -280,7 +284,8 @@ public class NewEventActivity extends ActionBarActivity{
 
 
     public void showEndDatePickerDialog(View v) {
-        DialogFragment newFragment = new EndDatePickerFragment(v);
+        EndDatePickerFragment newFragment = new EndDatePickerFragment();
+        newFragment.setV(v);
         newFragment.show(getSupportFragmentManager(), "timePicker");
     }
 
@@ -289,8 +294,7 @@ public class NewEventActivity extends ActionBarActivity{
 
         private View v;
 
-        public EndDatePickerFragment(View v){
-            super();
+        public void setV(View v){
             this.v = v;
         }
 
@@ -343,7 +347,11 @@ public class NewEventActivity extends ActionBarActivity{
             Calendar ecal = new GregorianCalendar(endYr,endMn,endDt,endHr,endMin);
             Date ed =  ecal.getTime();
 
-            if (ed.before(sd)){
+            final Date currd = Calendar.getInstance().getTime();
+
+            if (sd.before(currd)){
+                showDialog(v, "Invalid Date/Time", "Start Time is at/before Current Time");
+            } else if (ed.before(sd)){
                 showDialog(v, "Invalid Date/Time", "End Time is before Start Time");
             } else {
                 String nameStr = ((EditText) par.findViewById(R.id.eventName)).getText().toString();

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -265,6 +266,7 @@ public class MainActivity extends ActionBarActivity {
         private static final int CAPTURE_IMAGE_REQUEST_CODE = 1993;
         public static String EVENT_ID;
         private Uri imageUri;
+        private boolean isPast;
 
         public MainMenuFragment() {
 
@@ -274,6 +276,9 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+
+            // Make user go back and forth between main and past doesn't do weird stuff
+//            getActivity().getSupportFragmentManager().popBackStack("main", FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             eventListAdapter = new EventListAdapter(this.getActivity(), MainMenuFragment.this, false);
@@ -309,7 +314,17 @@ public class MainActivity extends ActionBarActivity {
             past_event_button.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v){
-                    startActivity(new Intent(v.getContext(), PastEventsActivity.class));
+                // Create new fragment and transaction
+                Fragment newFragment = new PastEventsFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+                // Replace whatever is in the fragment_container view with this fragment,
+                // and add the transaction to the back stack
+                transaction.replace(R.id.container, newFragment);
+                transaction.addToBackStack("main");
+
+                // Commit the transaction
+                transaction.commit();
                 }
             });
 
@@ -369,6 +384,58 @@ public class MainActivity extends ActionBarActivity {
             }
 
             return mediaFile;
+        }
+    }
+
+    /**
+     * A placeholder fragment containing a simple view.
+     */
+    public static class PastEventsFragment extends Fragment {
+
+        private EventListAdapter eventListAdapter;
+
+        public PastEventsFragment() {
+
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+
+            View rootView = inflater.inflate(R.layout.fragment_past_events, container, false);
+            eventListAdapter = new EventListAdapter(this.getActivity(),PastEventsFragment.this,true);
+            eventListAdapter.setTextKey(Event.NAME_KEY);
+            final ListView eventListView = (ListView) rootView.findViewById(R.id.listview_past_events);
+            if (eventListView == null){
+                Log.d("parse", "listView null");
+            }
+            eventListView.setAdapter(eventListAdapter);
+
+            eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Event event = eventListAdapter.getItem(position);
+                    Intent intent = new Intent(view.getContext(),EventDetailActivity.class)
+                            .putExtra(Event.ID_TEXT,event.getObjectId()).putExtra(Event.ISFUTURE_TEXT,event.isFuture());
+                    startActivity(intent);
+                }
+            });
+
+//            ImageButton back_button = (ImageButton) rootView.findViewById(R.id.back_button);
+//            back_button.setOnClickListener(new View.OnClickListener(){
+//                @Override
+//                public void onClick(View v){
+//                    getActivity().dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK));
+//                }
+//            });
+
+            return rootView;
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+            eventListAdapter.loadObjects();
         }
     }
 }
