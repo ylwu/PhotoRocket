@@ -119,7 +119,8 @@ public class NewEventActivity extends ActionBarActivity{
 
     public void showStartTimePickerDialog(View v) {
         Log.d("showstarttime", "here");
-        DialogFragment newFragment = new StartTimePickerFragment(v);
+        StartTimePickerFragment newFragment = new StartTimePickerFragment();
+        newFragment.setV(v);
         newFragment.show(getSupportFragmentManager(), "timePicker");
     }
 
@@ -128,8 +129,7 @@ public class NewEventActivity extends ActionBarActivity{
 
         private View v;
 
-        public StartTimePickerFragment(View v){
-            super();
+        public void setV(View v){
             this.v = v;
         }
 
@@ -174,7 +174,8 @@ public class NewEventActivity extends ActionBarActivity{
 
 
     public void showEndTimePickerDialog(View v) {
-        DialogFragment newFragment = new EndTimePickerFragment(v);
+        EndTimePickerFragment newFragment = new EndTimePickerFragment();
+        newFragment.setV(v);
         newFragment.show(getSupportFragmentManager(), "timePicker");
     }
 
@@ -183,8 +184,7 @@ public class NewEventActivity extends ActionBarActivity{
 
         private View v;
 
-        public EndTimePickerFragment(View v){
-            super();
+        public void setV(View v){
             this.v = v;
         }
 
@@ -227,7 +227,8 @@ public class NewEventActivity extends ActionBarActivity{
 
 
     public void showStartDatePickerDialog(View v) {
-        DialogFragment newFragment = new StartDatePickerFragment(v);
+        StartDatePickerFragment newFragment = new StartDatePickerFragment();
+        newFragment.setV(v);
         newFragment.show(getSupportFragmentManager(), "timePicker");
     }
 
@@ -236,8 +237,7 @@ public class NewEventActivity extends ActionBarActivity{
 
         private View v;
 
-        public StartDatePickerFragment(View v){
-            super();
+        public void setV(View v){
             this.v = v;
         }
 
@@ -284,7 +284,8 @@ public class NewEventActivity extends ActionBarActivity{
 
 
     public void showEndDatePickerDialog(View v) {
-        DialogFragment newFragment = new EndDatePickerFragment(v);
+        EndDatePickerFragment newFragment = new EndDatePickerFragment();
+        newFragment.setV(v);
         newFragment.show(getSupportFragmentManager(), "timePicker");
     }
 
@@ -293,8 +294,7 @@ public class NewEventActivity extends ActionBarActivity{
 
         private View v;
 
-        public EndDatePickerFragment(View v){
-            super();
+        public void setV(View v){
             this.v = v;
         }
 
