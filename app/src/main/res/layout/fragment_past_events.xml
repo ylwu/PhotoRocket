@@ -23,13 +23,13 @@
             android:id="@+id/listview_past_events"
             android:layout_below="@id/title_label_past_events"/>
 
-        <ImageButton
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_below="@+id/listview_past_events"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/back_icon"
-            android:id="@+id/back_button"/>
+        <!--<ImageButton-->
+            <!--android:layout_width="70dp"-->
+            <!--android:layout_height="70dp"-->
+            <!--android:layout_below="@+id/listview_past_events"-->
+            <!--android:layout_gravity="center_horizontal"-->
+            <!--android:background="@drawable/back_icon"-->
+            <!--android:id="@+id/back_button"/>-->
         </LinearLayout>
 
 </RelativeLayout>

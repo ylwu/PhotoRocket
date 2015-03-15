@@ -277,6 +277,9 @@ public class MainActivity extends ActionBarActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
 
+            // Make user go back and forth between main and past doesn't do weird stuff
+//            getActivity().getSupportFragmentManager().popBackStack("main", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             eventListAdapter = new EventListAdapter(this.getActivity(), MainMenuFragment.this, false);
             eventListAdapter.setTextKey(Event.NAME_KEY);
@@ -318,7 +321,7 @@ public class MainActivity extends ActionBarActivity {
                 // Replace whatever is in the fragment_container view with this fragment,
                 // and add the transaction to the back stack
                 transaction.replace(R.id.container, newFragment);
-                transaction.addToBackStack(null);
+                transaction.addToBackStack("main");
 
                 // Commit the transaction
                 transaction.commit();
@@ -418,16 +421,13 @@ public class MainActivity extends ActionBarActivity {
                 }
             });
 
-            ImageButton back_button = (ImageButton) rootView.findViewById(R.id.back_button);
-            back_button.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v){
-                    Fragment newFragment = new MainMenuFragment();
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    transaction.replace(R.id.container, newFragment);
-                    transaction.commit();
-                }
-            });
+//            ImageButton back_button = (ImageButton) rootView.findViewById(R.id.back_button);
+//            back_button.setOnClickListener(new View.OnClickListener(){
+//                @Override
+//                public void onClick(View v){
+//                    getActivity().dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK));
+//                }
+//            });
 
             return rootView;
         }
