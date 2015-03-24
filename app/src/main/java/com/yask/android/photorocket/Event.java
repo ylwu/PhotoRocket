@@ -65,6 +65,14 @@ public class Event extends ParseObject {
         return participants;
     }
 
+    public List<String> getEmailAddresses(){
+        List<String> emailAddresses = new ArrayList<String>();
+        for (Object user: getList(PARTICIPANTS_KEY)){
+           emailAddresses.add(((ParseUser) user).getEmail());
+        }
+        return emailAddresses;
+    };
+
     public void addParticipant(ParseUser user){
         ArrayList<ParseUser> participants = (ArrayList) get(PARTICIPANTS_KEY);
         participants.add(user);

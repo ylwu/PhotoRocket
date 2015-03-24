@@ -21,13 +21,16 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.parse.ParseException;
 import com.parse.SaveCallback;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 
 public class NewEventActivity extends ActionBarActivity{
@@ -66,6 +69,15 @@ public class NewEventActivity extends ActionBarActivity{
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0){
+            Intent i = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(i);
+        }
+    }
+
 
     /*=*/ //use this to save event
     //Helper function to save an Event
@@ -90,8 +102,21 @@ public class NewEventActivity extends ActionBarActivity{
                 }
             }
         });
-
     }
+
+    private void sendInvitations(List<String> receipients){
+        String[] listOfReceipients = receipients.toArray(new String[receipients.size()]);
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("message/rfc822");
+        i.putExtra(Intent.EXTRA_EMAIL  , listOfReceipients);
+        i.putExtra(Intent.EXTRA_SUBJECT, "PhotoRocket: Event Invitation");
+        i.putExtra(Intent.EXTRA_TEXT   , "Please join my event!");
+        try {
+            startActivityForResult(Intent.createChooser(i, "Send invitations"), 0);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+        }
+    };
 
     /**
      * A placeholder fragment containing a simple view.
@@ -360,8 +385,7 @@ public class NewEventActivity extends ActionBarActivity{
                 } else {
                     //call save
                     saveEvent(nameStr, sd, ed);
-                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(i);
+                    sendInvitations(Arrays.asList("kkatongo@mit.edu", "katongo.kapaya@gmail.com"));
                 }
             }
         }
