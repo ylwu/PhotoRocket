@@ -38,6 +38,26 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.yask.android.photorocket.MainActivity" />
         </activity>
+
+        <receiver
+            android:name=".ConnectionReceiver"
+            android:enabled="true" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".UploadService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
+
+        <receiver
+            android:name=".AlarmReceiver"
+            android:enabled="true"
+            android:exported="true" >
+        </receiver>
     </application>
 
 </manifest>

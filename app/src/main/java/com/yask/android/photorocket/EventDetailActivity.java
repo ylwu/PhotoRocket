@@ -1,6 +1,11 @@
 package com.yask.android.photorocket;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -57,6 +62,7 @@ public class EventDetailActivity extends ActionBarActivity {
         System.out.println(photosAdapter==null);
         System.out.println(gridView == null);
         gridView.setAdapter(photosAdapter);
+        startMonitoringConnection();
         super.onStart();
     }
 
@@ -68,6 +74,7 @@ public class EventDetailActivity extends ActionBarActivity {
     }
 
     private void loadPhotosFromParse(String eventID) {
+        System.out.println("loading from parse");
         ParseQuery query = new ParseQuery("Photo");
         query.whereEqualTo(Photo.EVENT_ID_KEY, eventID);
         query.findInBackground(new FindCallback<Photo>() {
@@ -143,6 +150,42 @@ public class EventDetailActivity extends ActionBarActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_event_detail, menu);
         return true;
+    }
+
+    private class ConnectionMonitor extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (!action.equals(ConnectivityManager.CONNECTIVITY_ACTION))
+                return;
+            boolean noConnectivity = intent.getBooleanExtra(
+                    ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
+            NetworkInfo aNetworkInfo = (NetworkInfo) intent
+                    .getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
+            if (!noConnectivity) {
+                if ((aNetworkInfo.getType() == ConnectivityManager.TYPE_MOBILE)
+                        || (aNetworkInfo.getType() == ConnectivityManager.TYPE_WIFI)) {
+                    loadPhotosFromParse(eventID);
+                    stopMonitoringConnection();
+                }
+            } else {
+                if ((aNetworkInfo.getType() == ConnectivityManager.TYPE_MOBILE)
+                        || (aNetworkInfo.getType() == ConnectivityManager.TYPE_WIFI)) {
+                }
+            }
+        }
+    }
+
+    ConnectionMonitor mConnectionReceiver = new ConnectionMonitor();
+
+    private synchronized void startMonitoringConnection() {
+        IntentFilter aFilter = new IntentFilter(
+                ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(mConnectionReceiver, aFilter);
+    }
+    private synchronized void stopMonitoringConnection() {
+        unregisterReceiver(mConnectionReceiver);
     }
 
     @Override

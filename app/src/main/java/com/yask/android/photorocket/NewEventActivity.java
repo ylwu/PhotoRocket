@@ -83,6 +83,7 @@ public class NewEventActivity extends ActionBarActivity{
     //Helper function to save an Event
     private void saveEvent(String eventName, Date startTime, Date endTime){
         final Event event = new Event(eventName,startTime,endTime);
+        AlarmReceiver.setAlarm(getApplicationContext(), startTime);
         //event is first saved locally and then saved in cloud
         event.pinInBackground(new SaveCallback() {
             @Override
