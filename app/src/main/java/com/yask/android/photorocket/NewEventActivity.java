@@ -114,7 +114,7 @@ public class NewEventActivity extends ActionBarActivity{
         try {
             startActivityForResult(Intent.createChooser(i, "Send invitations"), 0);
         } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "There are no email clients installed.", Toast.LENGTH_LONG).show();
         }
     };
 
