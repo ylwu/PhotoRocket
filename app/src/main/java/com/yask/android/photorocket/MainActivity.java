@@ -52,8 +52,18 @@ public class MainActivity extends ActionBarActivity {
         String action = intent.getAction();
         String type = intent.getType();
 
-        if (Intent.ACTION_VIEW.equals(action) && type != null) {
-            Log.d("photoRocket", intent.getDataString());
+        if (action != null) {
+            Log.d("parse action", action);
+        }
+        if (type != null){
+            Log.d("parse type", type);
+        }
+
+
+        if (Intent.ACTION_VIEW.equals(action)) {
+            Log.d("parse action", intent.getDataString());
+            // used magic number 15 to get rid of prefix
+            Utils.joinEvent(intent.getDataString().substring(15));
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -62,7 +72,7 @@ public class MainActivity extends ActionBarActivity {
                     .add(R.id.container, new MainMenuFragment())
                     .commit();
         }
-        Log.e("parse", "HELLO");
+        Log.d("parse", "HELLO");
 
 
 //        Uncomment this to add a new event
