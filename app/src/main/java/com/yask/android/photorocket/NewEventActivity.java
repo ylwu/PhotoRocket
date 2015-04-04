@@ -260,7 +260,7 @@ public class NewEventActivity extends ActionBarActivity{
             inv.setText(newInvStr + "\n" + inv.getText());
             newInv.setText("");
         } else {
-            inv.setText("[" + eventId + "][" + eventName + "][" + eventStartTime + "]");
+//            inv.setText("[" + eventId + "][" + eventName + "][" + eventStartTime + "]");
         }
     }
 
