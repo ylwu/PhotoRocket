@@ -107,9 +107,10 @@ public class NewEventActivity extends ActionBarActivity{
 
     /*=*/ //use this to save event
     //Helper function to save an Event
-    private void saveEvent(String eventName, Date startTime, Date endTime){
+    private void saveEvent(String eventName, Date startTime,final Date endTime){
         final Event event = new Event(eventName,startTime,endTime);
-        AlarmReceiver.setAlarm(getApplicationContext(), startTime);
+        NotificationAlarmReceiver.setAlarm(getApplicationContext(), startTime);
+
         //event is first saved locally and then saved in cloud
         event.pinInBackground(new SaveCallback() {
             @Override
@@ -122,6 +123,7 @@ public class NewEventActivity extends ActionBarActivity{
                             if (e != null){
                                 Log.e("parse error",e.getLocalizedMessage());
                             } else {
+                                UploadAlarmReceiver.setAlarm(getApplicationContext(), endTime, event.getObjectId());
                                 Log.d("parse NewEventActivity", "event saved in cloud");
                             }
                         }

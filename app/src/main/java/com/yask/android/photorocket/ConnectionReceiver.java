@@ -27,7 +27,7 @@ public class ConnectionReceiver extends BroadcastReceiver {
                     || (aNetworkInfo.getType() == ConnectivityManager.TYPE_WIFI)) {
                 System.out.println("TRYING TO START SERVICE");
                 Intent i = new Intent(context, UploadService.class);
-                context.startService(i);
+         //       context.startService(i);
             }
         } else {
             if ((aNetworkInfo.getType() == ConnectivityManager.TYPE_MOBILE)
