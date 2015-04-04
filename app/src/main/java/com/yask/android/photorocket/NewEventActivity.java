@@ -124,6 +124,9 @@ public class NewEventActivity extends ActionBarActivity{
                                 Log.e("parse error",e.getLocalizedMessage());
                             } else {
                                 UploadAlarmReceiver.setAlarm(getApplicationContext(), endTime, event.getObjectId());
+                                String s = (String) ((TextView) findViewById(R.id.invited)).getText();
+                                String[] ss = s.split("\n");
+                                sendInvitations(Arrays.asList(ss), event.getObjectId());
                                 Log.d("parse NewEventActivity", "event saved in cloud");
                             }
                         }
@@ -133,13 +136,13 @@ public class NewEventActivity extends ActionBarActivity{
         });
     }
 
-    private void sendInvitations(List<String> receipients){
+    private void sendInvitations(List<String> receipients, String eventID){
         String[] listOfReceipients = receipients.toArray(new String[receipients.size()]);
         Intent i = new Intent(Intent.ACTION_SEND);
         i.setType("message/rfc822");
         i.putExtra(Intent.EXTRA_EMAIL  , listOfReceipients);
         i.putExtra(Intent.EXTRA_SUBJECT, "PhotoRocket: Event Invitation");
-        i.putExtra(Intent.EXTRA_TEXT   , "Please join my event!");
+        i.putExtra(Intent.EXTRA_TEXT   , "Please join my event: " + "http://eventid/" + eventID);
         try {
             startActivityForResult(Intent.createChooser(i, "Send invitations"), 0);
         } catch (android.content.ActivityNotFoundException ex) {
@@ -431,10 +434,9 @@ public class NewEventActivity extends ActionBarActivity{
                 } else {
                     //call save
                     saveEvent(nameStr, sd, ed);
-                    String s = (String) ((TextView) par.findViewById(R.id.invited)).getText();
-                    String[] ss = s.split("\n");
-                    sendInvitations(Arrays.asList(ss));
-//                    sendInvitations(Arrays.asList("kkatongo@mit.edu", "katongo.kapaya@gmail.com"));
+//                    String s = (String) ((TextView) par.findViewById(R.id.invited)).getText();
+//                    String[] ss = s.split("\n");
+//                    sendInvitations(Arrays.asList(ss));
                 }
             }
         }
