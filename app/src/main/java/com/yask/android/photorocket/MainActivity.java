@@ -48,6 +48,23 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        String type = intent.getType();
+
+        if (action != null) {
+            Log.d("parse action", action);
+        }
+        if (type != null){
+            Log.d("parse type", type);
+        }
+
+
+        if (Intent.ACTION_VIEW.equals(action)) {
+            Log.d("parse action", intent.getDataString());
+            // used magic number 15 to get rid of prefix
+            Utils.joinEvent(intent.getDataString().substring(15));
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
@@ -55,7 +72,7 @@ public class MainActivity extends ActionBarActivity {
                     .add(R.id.container, new MainMenuFragment())
                     .commit();
         }
-        Log.e("parse", "HELLO");
+        Log.d("parse", "HELLO");
 
 
 //        Uncomment this to add a new event
@@ -189,9 +206,7 @@ public class MainActivity extends ActionBarActivity {
             String toastString;
             if (eventId == null){
                 toastString = "No Event";
-            } else if (eventId == Utils.MORE_THAN_ONE_EVENT_ERROR){
-                toastString = Utils.MORE_THAN_ONE_EVENT_ERROR;
-            } else {
+            }  else {
                 toastString = eventId;
             }
             Toast toast = Toast.makeText(getApplicationContext(),toastString,Toast.LENGTH_LONG);
