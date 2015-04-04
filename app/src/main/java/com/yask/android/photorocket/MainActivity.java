@@ -314,9 +314,14 @@ public class MainActivity extends ActionBarActivity {
                     Event event = eventListAdapter.getItem(position);
                     EVENT_ID = event.getObjectId();
                     /*+*/
-//                    Intent intent = new Intent(view.getContext(),EventDetailActivity.class)
-//                            .putExtra(Event.ID_TEXT,event.getObjectId()).putExtra(Event.ISFUTURE_TEXT,event.isFuture());
 
+                    Intent intent;
+
+                    if (! event.isFuture()) {
+
+                        intent = new Intent(view.getContext(), EventDetailActivity.class)
+                                .putExtra(Event.ID_TEXT, event.getObjectId()).putExtra(Event.ISFUTURE_TEXT, event.isFuture());
+                    } else {
 //                    public static final String NAME_KEY = "name";
 //                    public static final String PARTICIPANTS_KEY = "participants";
 //                    public static final String STARTTIME_KEY = "startTime";
@@ -325,15 +330,83 @@ public class MainActivity extends ActionBarActivity {
 //                    public static final String ISOCCURING_TEXT = "isOccuring";
 //                    public static final String ISFUTURE_TEXT = "isFuture";
 
-                    Intent intent = new Intent(view.getContext(),NewEventActivity.class)
-                            .putExtra(Event.NAME_KEY,event.getEventName())
-//                            .putExtra(Event.PARTICIPANTS_KEY,event.getParticipants())
-                            .putExtra(Event.STARTTIME_KEY,event.getStartTime())
-                            .putExtra(Event.ENDTIME_KEY,event.getEndTime())
-                            .putExtra(Event.ID_TEXT,event.getObjectId())
-                            .putExtra(Event.ISOCCURING_TEXT,event.isOccuring())
-                            .putExtra(Event.ISPAST_TEXT,event.isPast())
-                            .putExtra(Event.ISFUTURE_TEXT,event.isFuture());
+                        Date ssstart = event.getStartTime();
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTime(ssstart);
+                        int ssyear = cal.get(Calendar.YEAR);
+                        int ssmonth = cal.get(Calendar.MONTH);
+                        int ssday = cal.get(Calendar.DAY_OF_MONTH);
+                        int sshr = cal.get(Calendar.HOUR_OF_DAY);
+                        int ssmin = cal.get(Calendar.MINUTE);
+
+                        String ssstrhr;
+                        String ssstrmin;
+                        String ssstrmn;
+                        String ssstrdt;
+                        if (ssday < 10){
+                            ssstrdt = "0" + ssday;
+                        } else {
+                            ssstrdt = "" + ssday;
+                        }
+                        if (ssmonth < 9){
+                            ssstrmn = "0" + (ssmonth + 1);
+                        } else {
+                            ssstrmn = "" + (ssmonth + 1);
+                        }
+                        if (sshr < 10){
+                            ssstrhr = "0" + sshr;
+                        } else {
+                            ssstrhr = "" + sshr;
+                        }
+                        if (ssmin < 10){
+                            ssstrmin = "0" + ssmin;
+                        } else {
+                            ssstrmin = "" + ssmin;
+                        }
+
+                        Date eestart = event.getStartTime();
+                        Calendar ecal = Calendar.getInstance();
+                        ecal.setTime(ssstart);
+                        int eeyear = ecal.get(Calendar.YEAR);
+                        int eemonth = ecal.get(Calendar.MONTH);
+                        int eeday = ecal.get(Calendar.DAY_OF_MONTH);
+                        int eehr = ecal.get(Calendar.HOUR_OF_DAY);
+                        int eemin = ecal.get(Calendar.MINUTE);
+
+                        String eestrhr;
+                        String eestrmin;
+                        String eestrmn;
+                        String eestrdt;
+                        if (eeday < 10){
+                            eestrdt = "0" + eeday;
+                        } else {
+                            eestrdt = "" + eeday;
+                        }
+                        if (eemonth < 9){
+                            eestrmn = "0" + (eemonth + 1);
+                        } else {
+                            eestrmn = "" + (eemonth + 1);
+                        }
+                        if (eehr < 10){
+                            eestrhr = "0" + eehr;
+                        } else {
+                            eestrhr = "" + eehr;
+                        }
+                        if (eemin < 10){
+                            eestrmin = "0" + eemin;
+                        } else {
+                            eestrmin = "" + eemin;
+                        }
+
+                        intent = new Intent(view.getContext(), NewEventActivity.class)
+                                .putExtra(Event.NAME_KEY, event.getEventName())
+                                .putExtra(Event.STARTTIME_KEY, ssyear + "-" + ssstrmn + "-" + ssstrdt + " " + ssstrhr + ":" + ssstrmin)
+                                .putExtra(Event.ENDTIME_KEY, eeyear + "-" + eestrmn + "-" + eestrdt + " " + eestrhr + ":" + eestrmin)
+                                .putExtra(Event.ID_TEXT, event.getObjectId())
+                                .putExtra(Event.ISOCCURING_TEXT, event.isOccuring())
+                                .putExtra(Event.ISPAST_TEXT, event.isPast())
+                                .putExtra(Event.ISFUTURE_TEXT, event.isFuture());
+                    }
                     startActivity(intent);
                 }
             });
