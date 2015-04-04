@@ -26,7 +26,7 @@ public class UploadService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         // Let it continue running until it is stopped.
         //Toast.makeText(this, "Service Started", Toast.LENGTH_LONG).show();
-        String eventID = intent.getStringExtra("eventID");
+        String eventID = intent.getStringExtra(Event.ID_TEXT);
         System.out.println("trying to upload stuff from upload service");
         Utils.uploadPhotosToParse(eventID);
         System.out.println("Uploaded Stuff");
