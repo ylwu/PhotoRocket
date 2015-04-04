@@ -10,8 +10,8 @@ import android.support.v4.app.NotificationCompat;
 
 import java.util.Date;
 
-public class AlarmReceiver extends BroadcastReceiver {
-    public AlarmReceiver() {
+public class NotificationAlarmReceiver extends BroadcastReceiver {
+    public NotificationAlarmReceiver() {
     }
 
     @Override
@@ -44,7 +44,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 
     public static void  setAlarm(Context context, Date startTime){
-        Intent intent = new Intent(context.getApplicationContext() , AlarmReceiver.class);
+        Intent intent = new Intent(context.getApplicationContext() , NotificationAlarmReceiver.class);
         PendingIntent pendingIntent  = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
