@@ -16,16 +16,16 @@ public class UploadAlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         // TODO: This method is called when the BroadcastReceiver is receiving
         // an Intent broadcast.
-        String eventID = intent.getStringExtra("eventID");
+        String eventID = intent.getStringExtra(Event.ID_TEXT);
         Intent i = new Intent(context, UploadService.class);
-        i.putExtra("eventID", eventID);
+        i.putExtra(Event.ID_TEXT, eventID);
         System.out.println(eventID);
         context.startService(i);
     }
 
     public static void  setAlarm(Context context, Date startTime, String eventID){
         Intent intent = new Intent(context.getApplicationContext() , UploadAlarmReceiver.class);
-        intent.putExtra("eventID", eventID);
+        intent.putExtra(Event.ID_TEXT, eventID);
         PendingIntent pendingIntent  = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
