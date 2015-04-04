@@ -7,10 +7,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textStyle="bold"
             android:textSize="30sp"
             android:id="@+id/title_label"
-            android:text="Events"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:text="Events"/>
 
         <ListView
             android:layout_width="match_parent"

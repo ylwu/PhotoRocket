@@ -1,6 +1,10 @@
 package com.yask.android.photorocket;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -365,7 +369,30 @@ public class MainActivity extends ActionBarActivity {
                 }
             });
 
+            if (!haveNetworkConnection()) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage("You need a network connection to create a new event. Please turn on mobile network or Wi-Fi in Settings.")
+                        .setTitle("Unable to Connect")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", null);
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+
             return rootView;
+        }
+
+        private boolean haveNetworkConnection() {
+            boolean connected = false;
+            ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+            for (NetworkInfo ni : netInfo) {
+             if (ni.isConnected()){
+                    connected = true;
+                    break;
+                }
+            }
+            return connected;
         }
 
         @Override

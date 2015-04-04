@@ -142,7 +142,7 @@ public class NewEventActivity extends ActionBarActivity{
         i.setType("message/rfc822");
         i.putExtra(Intent.EXTRA_EMAIL  , listOfReceipients);
         i.putExtra(Intent.EXTRA_SUBJECT, "PhotoRocket: Event Invitation");
-        i.putExtra(Intent.EXTRA_TEXT   , "Please join my event: " + "http://eventid/" + eventID);
+        i.putExtra(Intent.EXTRA_TEXT   , "Please join my event in PhotoRocket: " + "http://eventid/" + eventID);
         try {
             startActivityForResult(Intent.createChooser(i, "Send invitations"), 0);
         } catch (android.content.ActivityNotFoundException ex) {
