@@ -23,6 +23,7 @@ public class Event extends ParseObject {
     public static final String ID_TEXT = "eventID";
     public static final String ISOCCURING_TEXT = "isOccuring";
     public static final String ISFUTURE_TEXT = "isFuture";
+    public static final String ISPAST_TEXT = "isPast";
 
     public Event(){
 
@@ -51,6 +52,13 @@ public class Event extends ParseObject {
         Calendar time = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
         time.setTime(getStartTime());
         return c.before(time);
+    }
+
+    public boolean isPast() {
+        Calendar c = Calendar.getInstance();
+        Calendar time = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+        time.setTime(getEndTime());
+        return c.after(time);
     }
 
     public Date getStartTime() {return getDate(STARTTIME_KEY);}
