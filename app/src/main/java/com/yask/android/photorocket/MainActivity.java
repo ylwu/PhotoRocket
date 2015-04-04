@@ -328,6 +328,7 @@ public class MainActivity extends ActionBarActivity {
                             .putExtra(Event.ENDTIME_KEY,event.getEndTime())
                             .putExtra(Event.ID_TEXT,event.getObjectId())
                             .putExtra(Event.ISOCCURING_TEXT,event.isOccuring())
+                            .putExtra(Event.ISPAST_TEXT,event.isPast())
                             .putExtra(Event.ISFUTURE_TEXT,event.isFuture());
                     startActivity(intent);
                 }
