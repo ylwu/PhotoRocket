@@ -30,17 +30,18 @@ public class EventDetailActivity extends ActionBarActivity {
     private String eventID;
     private boolean isFuture;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_detail);
-        if (savedInstanceState == null) {
-//            getSupportFragmentManager().beginTransaction().add(R.id.container, (Fragment) new DetailFragment()).commit();
-        }
         Intent intent = this.getIntent();
         if (intent != null && intent.hasExtra(Event.ID_TEXT)){
             eventID = intent.getStringExtra(Event.ID_TEXT);
             isFuture = intent.getBooleanExtra(Event.ISFUTURE_TEXT,false);
+            if (intent.getBooleanExtra(Event.ISPAST_TEXT,false)){
+                loadPhotosFromParse(eventID);
+            }
             Log.d("parse","eventID from list");
             Log.d("parse", String.valueOf(eventID));
             Log.d("parse event in future?", String.valueOf(isFuture));
