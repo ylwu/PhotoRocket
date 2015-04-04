@@ -328,6 +328,7 @@ public class MainActivity extends ActionBarActivity {
                             .putExtra(Event.ENDTIME_KEY,event.getEndTime())
                             .putExtra(Event.ID_TEXT,event.getObjectId())
                             .putExtra(Event.ISOCCURING_TEXT,event.isOccuring())
+                            .putExtra(Event.ISPAST_TEXT,event.isPast())
                             .putExtra(Event.ISFUTURE_TEXT,event.isFuture());
                     startActivity(intent);
                 }
@@ -339,8 +340,7 @@ public class MainActivity extends ActionBarActivity {
                 @Override
                 public void onClick(View v) {
                     /*+*/
-                    Intent i = new Intent(v.getContext(), NewEventActivity.class)
-                            .putExtra(Event.ID_TEXT, "");
+                    Intent i = new Intent(v.getContext(), NewEventActivity.class);
                     startActivity(i);
 //                    startActivity(new Intent(v.getContext(), NewEventActivity.class));
                 }
