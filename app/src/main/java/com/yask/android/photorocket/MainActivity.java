@@ -318,22 +318,15 @@ public class MainActivity extends ActionBarActivity {
                         intent = new Intent(view.getContext(), EventDetailActivity.class)
                                 .putExtra(Event.ID_TEXT, event.getObjectId()).putExtra(Event.ISFUTURE_TEXT, event.isFuture());
                     } else {
-//                    public static final String NAME_KEY = "name";
-//                    public static final String PARTICIPANTS_KEY = "participants";
-//                    public static final String STARTTIME_KEY = "startTime";
-//                    public static final String ENDTIME_KEY = "endTime";
-//                    public static final String ID_TEXT = "eventID";
-//                    public static final String ISOCCURING_TEXT = "isOccuring";
-//                    public static final String ISFUTURE_TEXT = "isFuture";
 
                         Date ssstart = event.getStartTime();
-                        Calendar cal = Calendar.getInstance();
-                        cal.setTime(ssstart);
-                        int ssyear = cal.get(Calendar.YEAR);
-                        int ssmonth = cal.get(Calendar.MONTH);
-                        int ssday = cal.get(Calendar.DAY_OF_MONTH);
-                        int sshr = cal.get(Calendar.HOUR_OF_DAY);
-                        int ssmin = cal.get(Calendar.MINUTE);
+                        Calendar scal = Calendar.getInstance();
+                        scal.setTime(ssstart);
+                        int ssyear = scal.get(Calendar.YEAR);
+                        int ssmonth = scal.get(Calendar.MONTH);
+                        int ssday = scal.get(Calendar.DAY_OF_MONTH);
+                        int sshr = scal.get(Calendar.HOUR_OF_DAY);
+                        int ssmin = scal.get(Calendar.MINUTE);
 
                         String ssstrhr;
                         String ssstrmin;
@@ -360,14 +353,17 @@ public class MainActivity extends ActionBarActivity {
                             ssstrmin = "" + ssmin;
                         }
 
-                        Date eestart = event.getStartTime();
+                        Date eeend = event.getEndTime();
                         Calendar ecal = Calendar.getInstance();
-                        ecal.setTime(ssstart);
+                        ecal.setTime(eeend);
                         int eeyear = ecal.get(Calendar.YEAR);
                         int eemonth = ecal.get(Calendar.MONTH);
                         int eeday = ecal.get(Calendar.DAY_OF_MONTH);
                         int eehr = ecal.get(Calendar.HOUR_OF_DAY);
                         int eemin = ecal.get(Calendar.MINUTE);
+
+                        Log.d("aaa", scal.toString());
+                        Log.d("bbb", ecal.toString());
 
                         String eestrhr;
                         String eestrmin;
@@ -402,6 +398,8 @@ public class MainActivity extends ActionBarActivity {
                                 .putExtra(Event.ISOCCURING_TEXT, event.isOccuring())
                                 .putExtra(Event.ISPAST_TEXT, event.isPast())
                                 .putExtra(Event.ISFUTURE_TEXT, event.isFuture());
+                        Log.d("aaa", ssyear + "-" + ssstrmn + "-" + ssstrdt + " " + ssstrhr + ":" + ssstrmin);
+                        Log.d("bbb", eeyear + "-" + eestrmn + "-" + eestrdt + " " + eestrhr + ":" + eestrmin);
                     }
                     startActivity(intent);
                 }
