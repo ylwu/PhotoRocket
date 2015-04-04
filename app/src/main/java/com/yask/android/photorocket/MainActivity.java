@@ -206,9 +206,7 @@ public class MainActivity extends ActionBarActivity {
             String toastString;
             if (eventId == null){
                 toastString = "No Event";
-            } else if (eventId == Utils.MORE_THAN_ONE_EVENT_ERROR){
-                toastString = Utils.MORE_THAN_ONE_EVENT_ERROR;
-            } else {
+            }  else {
                 toastString = eventId;
             }
             Toast toast = Toast.makeText(getApplicationContext(),toastString,Toast.LENGTH_LONG);

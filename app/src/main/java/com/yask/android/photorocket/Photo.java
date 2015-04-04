@@ -1,6 +1,5 @@
 package com.yask.android.photorocket;
 
-import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
@@ -36,7 +35,7 @@ public class Photo extends ParseObject{
         put(IS_SAVED_INCLOUD_KEY,false);
     }
 
-    public byte[] getBytesData(Context cr) {
+    public byte[] getBytesData() {
         if (getString(LOCAL_IMAGE_URI_KEY) == null){
             Log.d("parse","no local uri");
         } else {
