@@ -33,8 +33,8 @@ public class Event extends ParseObject {
         ArrayList<ParseUser> participants = new ArrayList<ParseUser>();
         participants.add(ParseUser.getCurrentUser());
         put(PARTICIPANTS_KEY,participants);
-        put(STARTTIME_KEY,startTime);
-        put(ENDTIME_KEY,endTime);
+        put(STARTTIME_KEY,startTime.toString());
+        put(ENDTIME_KEY,endTime.toString());
     }
 
     public boolean isOccuring(){

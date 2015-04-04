@@ -311,18 +311,40 @@ public class MainActivity extends ActionBarActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Event event = eventListAdapter.getItem(position);
                     EVENT_ID = event.getObjectId();
-                    Intent intent = new Intent(view.getContext(),EventDetailActivity.class)
-                            .putExtra(Event.ID_TEXT,event.getObjectId()).putExtra(Event.ISFUTURE_TEXT,event.isFuture());
+                    /*+*/
+//                    Intent intent = new Intent(view.getContext(),EventDetailActivity.class)
+//                            .putExtra(Event.ID_TEXT,event.getObjectId()).putExtra(Event.ISFUTURE_TEXT,event.isFuture());
+
+//                    public static final String NAME_KEY = "name";
+//                    public static final String PARTICIPANTS_KEY = "participants";
+//                    public static final String STARTTIME_KEY = "startTime";
+//                    public static final String ENDTIME_KEY = "endTime";
+//                    public static final String ID_TEXT = "eventID";
+//                    public static final String ISOCCURING_TEXT = "isOccuring";
+//                    public static final String ISFUTURE_TEXT = "isFuture";
+
+                    Intent intent = new Intent(view.getContext(),NewEventActivity.class)
+                            .putExtra(Event.NAME_KEY,event.getEventName())
+//                            .putExtra(Event.PARTICIPANTS_KEY,event.getParticipants())
+                            .putExtra(Event.STARTTIME_KEY,event.getStartTime())
+                            .putExtra(Event.ENDTIME_KEY,event.getEndTime())
+                            .putExtra(Event.ID_TEXT,event.getObjectId())
+                            .putExtra(Event.ISOCCURING_TEXT,event.isOccuring())
+                            .putExtra(Event.ISFUTURE_TEXT,event.isFuture());
                     startActivity(intent);
                 }
             });
 
             ImageButton add_new_event_button = (ImageButton) rootView.findViewById(R.id.add_new_event_button);
 
-            add_new_event_button.setOnClickListener(new View.OnClickListener(){
+            add_new_event_button.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v){
-                    startActivity(new Intent(v.getContext(), NewEventActivity.class));
+                public void onClick(View v) {
+                    /*+*/
+                    Intent i = new Intent(v.getContext(), NewEventActivity.class)
+                            .putExtra(Event.ID_TEXT, "");
+                    startActivity(i);
+//                    startActivity(new Intent(v.getContext(), NewEventActivity.class));
                 }
             });
 

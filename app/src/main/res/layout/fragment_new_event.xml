@@ -43,11 +43,11 @@
         android:id="@+id/invites"
         android:hint="Enter email of friends..."
         android:layout_below="@+id/endDate"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
         android:layout_marginTop="40dp"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/addButton"
+        android:layout_toLeftOf="@+id/addButton" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -98,4 +98,26 @@
         android:layout_alignParentEnd="true"
         android:clickable="true"
         android:onClick="showEndTimePickerDialog"/>
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="add"
+        android:clickable="true"
+        android:id="@+id/addButton"
+        android:layout_alignBottom="@+id/invites"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:onClick="addPerson"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text=""
+        android:id="@+id/invited"
+        android:layout_below="@+id/invites"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>
