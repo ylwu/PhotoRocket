@@ -34,7 +34,10 @@ import java.util.List;
 
 
 public class NewEventActivity extends ActionBarActivity{
-
+    private String eventName = "";
+    private String eventStart;
+    private Date eventEnd;
+    private String eventId = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +47,30 @@ public class NewEventActivity extends ActionBarActivity{
                     .add(R.id.container, new PlaceholderFragment())
                     .commit();
         }
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+//            public static final String NAME_KEY = "name";
+//            public static final String PARTICIPANTS_KEY = "participants";
+//            public static final String STARTTIME_KEY = "startTime";
+//            public static final String ENDTIME_KEY = "endTime";
+//            public static final String ID_TEXT = "eventID";
+//            public static final String ISOCCURING_TEXT = "isOccuring";
+//            public static final String ISFUTURE_TEXT = "isFuture";
+
+            eventName = extras.getString(Event.NAME_KEY);
+            eventId = extras.getString(Event.ID_TEXT);
+            eventStart = extras.getString(Event.STARTTIME_KEY);
+
+            EditText enameTV = (EditText) findViewById(R.id.eventName);
+            try {
+                enameTV.setText("aa");
+            } catch (Exception e){
+                Log.d("parse", e.toString());
+            }
+        }
     }
+
+
 
 
     @Override
@@ -136,6 +162,23 @@ public class NewEventActivity extends ActionBarActivity{
             return rootView;
         }
     }
+//----------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
+//  adding an email
+
+    public void addPerson(View v){
+        View par = (View) v.getParent();
+        EditText newInv = (EditText) par.findViewById(R.id.invites);
+        String newInvStr = newInv.getText().toString();
+        TextView inv = (TextView) par.findViewById(R.id.invited);
+        if (! newInvStr.equals("")) {
+            inv.setText(newInvStr + "\n" + inv.getText());
+            newInv.setText("");
+        } else {
+            inv.setText("[" + eventId + "][" + eventName + "][" + eventStart + "]");
+        }
+    }
+
 
 //----------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------
@@ -146,7 +189,7 @@ public class NewEventActivity extends ActionBarActivity{
 
 
     public void showStartTimePickerDialog(View v) {
-        Log.d("showstarttime", "here");
+        Log.e("showstarttime", "hereherehere");
         StartTimePickerFragment newFragment = new StartTimePickerFragment();
         newFragment.setV(v);
         newFragment.show(getSupportFragmentManager(), "timePicker");
@@ -388,7 +431,10 @@ public class NewEventActivity extends ActionBarActivity{
                 } else {
                     //call save
                     saveEvent(nameStr, sd, ed);
-                    sendInvitations(Arrays.asList("kkatongo@mit.edu", "katongo.kapaya@gmail.com"));
+                    String s = (String) ((TextView) par.findViewById(R.id.invited)).getText();
+                    String[] ss = s.split("\n");
+                    sendInvitations(Arrays.asList(ss));
+//                    sendInvitations(Arrays.asList("kkatongo@mit.edu", "katongo.kapaya@gmail.com"));
                 }
             }
         }
