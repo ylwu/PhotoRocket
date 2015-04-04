@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -35,38 +36,34 @@ import java.util.List;
 
 public class NewEventActivity extends ActionBarActivity{
     private String eventName = "";
-    private String eventStart;
-    private Date eventEnd;
+    private String eventStartDate = "";
+    private String eventStartTime = "";
+    private String eventEndDate = "";
+    private String eventEndTime = "";
     private String eventId = "";
+
+    private boolean isNewEvent = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            isNewEvent = false;
+            eventName = extras.getString(Event.NAME_KEY);
+            eventId = extras.getString(Event.ID_TEXT);
+            eventStartDate = extras.getString(Event.STARTTIME_KEY).split(" ")[0];
+            eventStartTime = extras.getString(Event.STARTTIME_KEY).split(" ")[1];
+            eventEndDate = extras.getString(Event.ENDTIME_KEY).split(" ")[0];
+            eventEndTime = extras.getString(Event.ENDTIME_KEY).split(" ")[1];
+        }
+
         setContentView(R.layout.activity_new_event);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+                    .add(R.id.container, new PlaceholderFragment(isNewEvent, eventName, eventStartDate, eventStartTime, eventEndDate, eventEndTime))
                     .commit();
-        }
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-//            public static final String NAME_KEY = "name";
-//            public static final String PARTICIPANTS_KEY = "participants";
-//            public static final String STARTTIME_KEY = "startTime";
-//            public static final String ENDTIME_KEY = "endTime";
-//            public static final String ID_TEXT = "eventID";
-//            public static final String ISOCCURING_TEXT = "isOccuring";
-//            public static final String ISFUTURE_TEXT = "isFuture";
-
-            eventName = extras.getString(Event.NAME_KEY);
-            eventId = extras.getString(Event.ID_TEXT);
-            eventStart = extras.getString(Event.STARTTIME_KEY);
-
-            EditText enameTV = (EditText) findViewById(R.id.eventName);
-            try {
-                enameTV.setText("aa");
-            } catch (Exception e){
-                Log.d("parse", e.toString());
-            }
         }
     }
 
@@ -133,6 +130,34 @@ public class NewEventActivity extends ActionBarActivity{
         });
     }
 
+    /*=*/ //use this to update event
+    //Helper function to update an Event
+    private void updateEvent(String eventID, String eventName, Date startTime,final Date endTime){
+//        final Event event = new Event(eventName,startTime,endTime);
+//        NotificationAlarmReceiver.setAlarm(getApplicationContext(), startTime);
+//
+//        //event is first saved locally and then saved in cloud
+//        event.pinInBackground(new SaveCallback() {
+//            @Override
+//            public void done(ParseException e) {
+//                if (e == null){
+//                    Log.d("parse NewEventActivity", "event updated locally");
+//                    event.saveEventually(new SaveCallback() {
+//                        @Override
+//                        public void done(ParseException e) {
+//                            if (e != null){
+//                                Log.e("parse error",e.getLocalizedMessage());
+//                            } else {
+//                                UploadAlarmReceiver.setAlarm(getApplicationContext(), endTime, event.getObjectId());
+//                                Log.d("parse NewEventActivity", "event updated in cloud");
+//                            }
+//                        }
+//                    });
+//                }
+//            }
+//        });
+    }
+
     private void sendInvitations(List<String> receipients){
         String[] listOfReceipients = receipients.toArray(new String[receipients.size()]);
         Intent i = new Intent(Intent.ACTION_SEND);
@@ -151,14 +176,43 @@ public class NewEventActivity extends ActionBarActivity{
      * A placeholder fragment containing a simple view.
      */
     public static class PlaceholderFragment extends Fragment {
-
-        public PlaceholderFragment() {
+        private String name, sd, st, ed, et;
+        private boolean isNewEvent;
+        public PlaceholderFragment(boolean isNewEvent, String name, String sd, String st, String ed, String et) {
+            this.isNewEvent = isNewEvent;
+            this.name = name;
+            this.sd = sd;
+            this.st = st;
+            this.ed = ed;
+            this.et = et;
         }
+
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_new_event, container, false);
+
+            if (!this.isNewEvent) {
+                EditText nameView = (EditText) rootView.findViewById(R.id.eventName);
+                nameView.setText(this.name);
+
+                TextView startDateView = (TextView) rootView.findViewById(R.id.startDate);
+                startDateView.setText(this.sd);
+
+                TextView startTimeView = (TextView) rootView.findViewById(R.id.startTime);
+                startTimeView.setText(this.st);
+
+                TextView endDateView = (TextView) rootView.findViewById(R.id.endDate);
+                endDateView.setText(this.ed);
+
+                TextView endTimeView = (TextView) rootView.findViewById(R.id.endTime);
+                endTimeView.setText(this.et);
+
+                Button createButton = (Button) rootView.findViewById(R.id.createButton);
+                createButton.setText("Update Event");
+            }
+
             return rootView;
         }
     }
@@ -175,7 +229,7 @@ public class NewEventActivity extends ActionBarActivity{
             inv.setText(newInvStr + "\n" + inv.getText());
             newInv.setText("");
         } else {
-            inv.setText("[" + eventId + "][" + eventName + "][" + eventStart + "]");
+            inv.setText("[" + eventId + "][" + eventName + "][" + eventStartTime + "]");
         }
     }
 
@@ -429,8 +483,14 @@ public class NewEventActivity extends ActionBarActivity{
                 if (nameStr.equals("")){
                     showDialog(v, "Invalid Event Name", "Enter an event name");
                 } else {
-                    //call save
-                    saveEvent(nameStr, sd, ed);
+                    //call save or update
+                    if (isNewEvent) {
+                        saveEvent(nameStr, sd, ed);
+                    }
+                    else {
+                        updateEvent(this.eventId, nameStr, sd, ed);
+                    }
+
                     String s = (String) ((TextView) par.findViewById(R.id.invited)).getText();
                     String[] ss = s.split("\n");
                     sendInvitations(Arrays.asList(ss));
