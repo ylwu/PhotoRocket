@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Html;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -171,7 +172,7 @@ public class NewEventActivity extends ActionBarActivity{
         i.setType("message/rfc822");
         i.putExtra(Intent.EXTRA_EMAIL  , listOfReceipients);
         i.putExtra(Intent.EXTRA_SUBJECT, "PhotoRocket: Event Invitation");
-        i.putExtra(Intent.EXTRA_TEXT   , "Please join my event in PhotoRocket: " + "http://eventid/" + eventID);
+        i.putExtra(Intent.EXTRA_TEXT   , Html.fromHtml("Please join my event in PhotoRocket: " + "<a href='http://eventid/" + eventID + "'>" + "http://eventid/" + eventID + "</a>"));
         try {
             startActivityForResult(Intent.createChooser(i, "Send invitations"), 0);
         } catch (android.content.ActivityNotFoundException ex) {
