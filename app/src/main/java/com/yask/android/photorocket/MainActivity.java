@@ -340,8 +340,7 @@ public class MainActivity extends ActionBarActivity {
                 @Override
                 public void onClick(View v) {
                     /*+*/
-                    Intent i = new Intent(v.getContext(), NewEventActivity.class)
-                            .putExtra(Event.ID_TEXT, "");
+                    Intent i = new Intent(v.getContext(), NewEventActivity.class);
                     startActivity(i);
 //                    startActivity(new Intent(v.getContext(), NewEventActivity.class));
                 }
