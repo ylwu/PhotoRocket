@@ -21,12 +21,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.parse.DeleteCallback;
-import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import org.apache.http.HttpEntity;
@@ -40,7 +36,6 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.TimeZone;
 
 
@@ -60,17 +55,20 @@ public class MainActivity extends ActionBarActivity {
         }
 
 
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        MainMenuFragment mainMenuFragment = new MainMenuFragment();
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container, mainMenuFragment)
+                    .commit();
+        }
+
         if (Intent.ACTION_VIEW.equals(action)) {
             Log.d("parse action", intent.getDataString());
             // used magic number 15 to get rid of prefix
-            Utils.joinEvent(intent.getDataString().substring(15));
-        }
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new MainMenuFragment())
-                    .commit();
+            Utils.joinEvent(intent.getDataString().substring(15),mainMenuFragment);
         }
         Log.d("parse", "HELLO");
 
@@ -85,36 +83,7 @@ public class MainActivity extends ActionBarActivity {
 //        event.saveInBackground();
     }
 
-    /*
-        Download events from cloud and save to local database
-     */
-    private void syncEventsByCurrentUser(){
-        ParseQuery<Event> query = new ParseQuery<Event>("Event");
-        Log.d("parse",ParseUser.getCurrentUser().getUsername());
-        query.whereEqualTo("participants", ParseUser.getCurrentUser());
-        query.include("participants");
-        query.findInBackground(new FindCallback<Event>() {
-            @Override
-            public void done(List<Event> events, ParseException e) {
-                if (e == null){
-                    ParseObject.pinAllInBackground(events,new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            if (e == null){
-                                Log.d("parse MainActivity", "synced events");
-                            } else {
-                                Log.e("parse MainActivity", e.getLocalizedMessage());
-                            }
-                        }
-                    });
-                } else {
-                    Log.e("parse", e.getLocalizedMessage());
-                    Log.e("parse", "cannot retrieve events");
-                }
 
-            }
-        });
-    }
 
 
     @Override
@@ -141,7 +110,7 @@ public class MainActivity extends ActionBarActivity {
             startActivity(new Intent(this,NewEventActivity.class));
         }
         if (id == R.id.action_sync_events) {
-            syncEventsByCurrentUser();
+            Utils.syncEventsByCurrentUser();
         }
         if (id == R.id.action_save_photo) {
             new FetchAndSavePhotoLocallyTask().execute();
@@ -273,7 +242,7 @@ public class MainActivity extends ActionBarActivity {
      */
     public static class MainMenuFragment extends Fragment {
 
-        private EventListAdapter eventListAdapter;
+        public EventListAdapter eventListAdapter;
 
         private static final String APP_NAME = "PhotoRocket";
         private static final int MEDIA_TYPE_IMAGE = 1;
@@ -291,6 +260,8 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+
+            Log.d("parse view","reload fragment");
 
             // Make user go back and forth between main and past doesn't do weird stuff
 //            getActivity().getSupportFragmentManager().popBackStack("main", FragmentManager.POP_BACK_STACK_INCLUSIVE);

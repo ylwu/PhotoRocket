@@ -53,12 +53,12 @@ public class Utils {
         }
     }
 
-    public static void joinEvent(String eventID) {
+    public static void joinEvent(String eventID, final MainActivity.MainMenuFragment fragment) {
         Log.d("parse event search", eventID);
         ParseQuery<Event> query = ParseQuery.getQuery("Event");
         query.getInBackground(eventID,new GetCallback<Event>() {
             @Override
-            public void done(Event event, ParseException e) {
+            public void done(final Event event, ParseException e) {
                 if (e == null) {
                     event.addParticipant(ParseUser.getCurrentUser());
                     event.saveInBackground(new SaveCallback() {
@@ -66,11 +66,13 @@ public class Utils {
                         public void done(ParseException e) {
                             if (e == null) {
                                 Log.d("parse user", "succesfully add participant");
+                                Utils.syncEventsByCurrentUser();
                             } else {
                                 Log.e("parse user", e.getLocalizedMessage());
                             }
                         }
                     });
+
                 } else {
                     Log.e("parse event search", e.getLocalizedMessage());
                 }
@@ -135,6 +137,37 @@ public class Utils {
                         }
                     });
                 }
+            }
+        });
+    }
+
+    /*
+        Download events from cloud and save to local database
+     */
+    public static void syncEventsByCurrentUser(){
+        ParseQuery<Event> query = new ParseQuery<Event>("Event");
+        Log.d("parse",ParseUser.getCurrentUser().getUsername());
+        query.whereEqualTo("participants", ParseUser.getCurrentUser());
+        query.include("participants");
+        query.findInBackground(new FindCallback<Event>() {
+            @Override
+            public void done(List<Event> events, ParseException e) {
+                if (e == null){
+                    ParseObject.pinAllInBackground(events,new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null){
+                                Log.d("parse MainActivity", "synced events");
+                            } else {
+                                Log.e("parse MainActivity", e.getLocalizedMessage());
+                            }
+                        }
+                    });
+                } else {
+                    Log.e("parse", e.getLocalizedMessage());
+                    Log.e("parse", "cannot retrieve events");
+                }
+
             }
         });
     }
