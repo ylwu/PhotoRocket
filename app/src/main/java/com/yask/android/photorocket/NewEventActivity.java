@@ -29,6 +29,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.SaveCallback;
 
 import java.util.Arrays;
@@ -140,6 +141,34 @@ public class NewEventActivity extends ActionBarActivity{
     /*=*/ //use this to update event
     //Helper function to update an Event
     private void updateEvent(String eventID, String eventName, Date startTime,final Date endTime){
+//            Log.d("parse", "loading from parse");
+//            ParseQuery query = new ParseQuery("Event");
+//            query.whereEqualTo("objectId", eventID);
+
+        // Create a pointer to an object of class Point with id dlkj83d
+        ParseObject point = ParseObject.createWithoutData("Event", eventID);
+
+        point.put(Event.NAME_KEY, eventName);
+        point.put(Event.STARTTIME_KEY, startTime);
+        point.put(Event.ENDTIME_KEY, endTime);
+
+    //  Save
+        point.saveInBackground(new SaveCallback() {
+            public void done(ParseException e) {
+                if (e != null) {
+                    Log.e("parse error", e.getLocalizedMessage());
+                } else {
+                    UploadAlarmReceiver.setAlarm(getApplicationContext(), endTime, eventId);
+                    String s = (String) ((TextView) findViewById(R.id.invited)).getText();
+                    String[] ss = s.split("\n");
+                    sendInvitations(Arrays.asList(ss), eventId);
+                    Log.d("parse NewEventActivity", "event updated in cloud");
+                }
+            }
+        });
+
+
+
 //        final Event event = new Event(eventName,startTime,endTime);
 //        NotificationAlarmReceiver.setAlarm(getApplicationContext(), startTime);
 //
@@ -201,6 +230,7 @@ public class NewEventActivity extends ActionBarActivity{
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_new_event, container, false);
 
+            // pull data if is updating event
             if (!this.isNewEvent) {
                 EditText nameView = (EditText) rootView.findViewById(R.id.eventName);
                 nameView.setText(this.name);
