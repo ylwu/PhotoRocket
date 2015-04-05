@@ -124,7 +124,7 @@ public class EventDetailActivity extends ActionBarActivity {
             if (!noConnectivity) {
                 if ((aNetworkInfo.getType() == ConnectivityManager.TYPE_MOBILE)
                         || (aNetworkInfo.getType() == ConnectivityManager.TYPE_WIFI)) {
-                    loadPhotosFromParse(eventID);
+                    //loadPhotosFromParse(eventID);
                     stopMonitoringConnection();
                 }
             } else {

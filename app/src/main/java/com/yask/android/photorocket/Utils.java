@@ -7,7 +7,6 @@ import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.text.SimpleDateFormat;
@@ -97,6 +96,7 @@ public class Utils {
                                     public void done(ParseException e) {
                                         if (e == null){
                                             Log.d("parse", "uploaded a photo");
+                                            photo.unpinInBackground();
                                         } else {
                                             Log.e("parse", "cannot upload the photo");
                                             photo.setLocalURI(uriString);
