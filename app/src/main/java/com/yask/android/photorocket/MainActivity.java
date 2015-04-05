@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -60,17 +61,20 @@ public class MainActivity extends ActionBarActivity {
         }
 
 
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        MainMenuFragment mainMenuFragment = new MainMenuFragment();
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container, mainMenuFragment)
+                    .commit();
+        }
+
         if (Intent.ACTION_VIEW.equals(action)) {
             Log.d("parse action", intent.getDataString());
             // used magic number 15 to get rid of prefix
-            Utils.joinEvent(intent.getDataString().substring(15));
-        }
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new MainMenuFragment())
-                    .commit();
+            joinEvent(intent.getDataString().substring(15), mainMenuFragment);
         }
         Log.d("parse", "HELLO");
 
@@ -85,36 +89,7 @@ public class MainActivity extends ActionBarActivity {
 //        event.saveInBackground();
     }
 
-    /*
-        Download events from cloud and save to local database
-     */
-    private void syncEventsByCurrentUser(){
-        ParseQuery<Event> query = new ParseQuery<Event>("Event");
-        Log.d("parse",ParseUser.getCurrentUser().getUsername());
-        query.whereEqualTo("participants", ParseUser.getCurrentUser());
-        query.include("participants");
-        query.findInBackground(new FindCallback<Event>() {
-            @Override
-            public void done(List<Event> events, ParseException e) {
-                if (e == null){
-                    ParseObject.pinAllInBackground(events,new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            if (e == null){
-                                Log.d("parse MainActivity", "synced events");
-                            } else {
-                                Log.e("parse MainActivity", e.getLocalizedMessage());
-                            }
-                        }
-                    });
-                } else {
-                    Log.e("parse", e.getLocalizedMessage());
-                    Log.e("parse", "cannot retrieve events");
-                }
 
-            }
-        });
-    }
 
 
     @Override
@@ -140,9 +115,9 @@ public class MainActivity extends ActionBarActivity {
         if (id == R.id.action_newEvent){
             startActivity(new Intent(this,NewEventActivity.class));
         }
-        if (id == R.id.action_sync_events) {
-            syncEventsByCurrentUser();
-        }
+//        if (id == R.id.action_sync_events) {
+//            Utils.syncEventsByCurrentUser();
+//        }
         if (id == R.id.action_save_photo) {
             new FetchAndSavePhotoLocallyTask().execute();
         }
@@ -179,6 +154,65 @@ public class MainActivity extends ActionBarActivity {
     protected void savePhotoLocally(final String eventID, String locaImageURI){
         Photo photo = new Photo(eventID,locaImageURI);
         photo.pinInBackground();
+    }
+
+    public void joinEvent(String eventID, final MainActivity.MainMenuFragment fragment) {
+        Log.d("parse event search", eventID);
+        ParseQuery<Event> query = ParseQuery.getQuery("Event");
+        query.getInBackground(eventID,new GetCallback<Event>() {
+            @Override
+            public void done(final Event event, ParseException e) {
+                if (e == null) {
+                    event.addParticipant(ParseUser.getCurrentUser());
+                    event.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                Log.d("parse user", "succesfully add participant");
+                                NotificationAlarmReceiver.setAlarm(getApplicationContext(), event.getStartTime());
+                                UploadAlarmReceiver.setAlarm(getApplicationContext(), event.getEndTime(), event.getObjectId());
+                                syncEventsByCurrentUser(fragment);
+                            } else {
+                                Log.e("parse user", e.getLocalizedMessage());
+                            }
+                        }
+                    });
+
+                } else {
+                    Log.e("parse event search", e.getLocalizedMessage());
+                }
+            }
+        });
+    }
+
+    /*
+        Download events from cloud and save to local database
+     */
+    public void syncEventsByCurrentUser(final MainActivity.MainMenuFragment fragment){
+        ParseQuery<Event> query = new ParseQuery<Event>("Event");
+        Log.d("parse",ParseUser.getCurrentUser().getUsername());
+        query.whereEqualTo("participants", ParseUser.getCurrentUser());
+        query.include("participants");
+        query.findInBackground(new FindCallback<Event>() {
+            @Override
+            public void done(List<Event> events, ParseException e) {
+                if (e == null){
+                    ParseObject.pinAllInBackground(events, new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                fragment.eventListAdapter.loadObjects();
+                            } else {
+                                Log.e("parse MainActivity", e.getLocalizedMessage());
+                            }
+                        }
+                    });
+                } else {
+                    Log.e("parse", e.getLocalizedMessage());
+                    Log.e("parse", "cannot retrieve events");
+                }
+            }
+        });
     }
 
 
@@ -273,7 +307,8 @@ public class MainActivity extends ActionBarActivity {
      */
     public static class MainMenuFragment extends Fragment {
 
-        private EventListAdapter eventListAdapter;
+        public EventListAdapter eventListAdapter;
+        public ListView eventListView;
 
         private static final String APP_NAME = "PhotoRocket";
         private static final int MEDIA_TYPE_IMAGE = 1;
@@ -292,13 +327,15 @@ public class MainActivity extends ActionBarActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
 
+            Log.d("parse view","reload fragment");
+
             // Make user go back and forth between main and past doesn't do weird stuff
 //            getActivity().getSupportFragmentManager().popBackStack("main", FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             eventListAdapter = new EventListAdapter(this.getActivity(), MainMenuFragment.this, false);
             eventListAdapter.setTextKey(Event.NAME_KEY);
-            final ListView eventListView = (ListView) rootView.findViewById(R.id.listview_main);
+            eventListView = (ListView) rootView.findViewById(R.id.listview_main);
             if (eventListView == null){
                 Log.d("parse", "listView null");
             }

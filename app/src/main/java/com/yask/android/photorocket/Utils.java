@@ -3,7 +3,6 @@ package com.yask.android.photorocket;
 import android.util.Log;
 
 import com.parse.FindCallback;
-import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -16,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
 /**
  * Created by ylwu on 3/7/15.
  */
@@ -53,30 +51,7 @@ public class Utils {
         }
     }
 
-    public static void joinEvent(String eventID) {
-        Log.d("parse event search", eventID);
-        ParseQuery<Event> query = ParseQuery.getQuery("Event");
-        query.getInBackground(eventID,new GetCallback<Event>() {
-            @Override
-            public void done(Event event, ParseException e) {
-                if (e == null) {
-                    event.addParticipant(ParseUser.getCurrentUser());
-                    event.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            if (e == null) {
-                                Log.d("parse user", "succesfully add participant");
-                            } else {
-                                Log.e("parse user", e.getLocalizedMessage());
-                            }
-                        }
-                    });
-                } else {
-                    Log.e("parse event search", e.getLocalizedMessage());
-                }
-            }
-        });
-    }
+
 
     public static boolean eventExistInTimeRange(Date startTime, Date endTime){
         List<Event> eventList = new ArrayList<Event>();
@@ -138,6 +113,8 @@ public class Utils {
             }
         });
     }
+
+
 
 
 }
