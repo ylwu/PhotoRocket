@@ -47,6 +47,18 @@ public class NewEventActivity extends ActionBarActivity{
     private String eventEndTime = "";
     private String eventId = "";
 
+    private static int startYr = -1;
+    private static int startMn = -1;
+    private static int startDt = -1;
+    private static int startHr = -1;
+    private static int startMin = -1;
+
+    private static int endYr = -1;
+    private static int endMn = -1;
+    private static int endDt = -1;
+    private static int endHr = -1;
+    private static int endMin = -1;
+
     private boolean isNewEvent = true;
 
     @Override
@@ -230,26 +242,110 @@ public class NewEventActivity extends ActionBarActivity{
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_new_event, container, false);
 
+            EditText nameView = (EditText) rootView.findViewById(R.id.eventName);
+            TextView startDateView = (TextView) rootView.findViewById(R.id.startDate);
+            TextView startTimeView = (TextView) rootView.findViewById(R.id.startTime);
+            TextView endDateView = (TextView) rootView.findViewById(R.id.endDate);
+            TextView endTimeView = (TextView) rootView.findViewById(R.id.endTime);
+            Button createButton = (Button) rootView.findViewById(R.id.createButton);
+
             // pull data if is updating event
             if (!this.isNewEvent) {
-                EditText nameView = (EditText) rootView.findViewById(R.id.eventName);
                 nameView.setText(this.name);
-
-                TextView startDateView = (TextView) rootView.findViewById(R.id.startDate);
                 startDateView.setText(this.sd);
-
-                TextView startTimeView = (TextView) rootView.findViewById(R.id.startTime);
                 startTimeView.setText(this.st);
-
-                TextView endDateView = (TextView) rootView.findViewById(R.id.endDate);
                 endDateView.setText(this.ed);
-
-                TextView endTimeView = (TextView) rootView.findViewById(R.id.endTime);
                 endTimeView.setText(this.et);
-
-                Button createButton = (Button) rootView.findViewById(R.id.createButton);
                 createButton.setText("Update Event");
+            } else {
+                Calendar scal = Calendar.getInstance();
+                scal.add(Calendar.MINUTE, 5);
+
+                int ssyear = scal.get(Calendar.YEAR);
+                int ssmonth = scal.get(Calendar.MONTH);
+                int ssday = scal.get(Calendar.DAY_OF_MONTH);
+                int sshr = scal.get(Calendar.HOUR_OF_DAY);
+                int ssmin = scal.get(Calendar.MINUTE);
+
+                String ssstrhr;
+                String ssstrmin;
+                String ssstrmn;
+                String ssstrdt;
+                if (ssday < 10){
+                    ssstrdt = "0" + ssday;
+                } else {
+                    ssstrdt = "" + ssday;
+                }
+                if (ssmonth < 9){
+                    ssstrmn = "0" + (ssmonth + 1);
+                } else {
+                    ssstrmn = "" + (ssmonth + 1);
+                }
+                if (sshr < 10){
+                    ssstrhr = "0" + sshr;
+                } else {
+                    ssstrhr = "" + sshr;
+                }
+                if (ssmin < 10){
+                    ssstrmin = "0" + ssmin;
+                } else {
+                    ssstrmin = "" + ssmin;
+                }
+
+                Calendar ecal = Calendar.getInstance();
+                ecal.add(Calendar.MINUTE, 35);
+
+                int eeyear = ecal.get(Calendar.YEAR);
+                int eemonth = ecal.get(Calendar.MONTH);
+                int eeday = ecal.get(Calendar.DAY_OF_MONTH);
+                int eehr = ecal.get(Calendar.HOUR_OF_DAY);
+                int eemin = ecal.get(Calendar.MINUTE);
+
+                String eestrhr;
+                String eestrmin;
+                String eestrmn;
+                String eestrdt;
+                if (eeday < 10){
+                    eestrdt = "0" + eeday;
+                } else {
+                    eestrdt = "" + eeday;
+                }
+                if (eemonth < 9){
+                    eestrmn = "0" + (eemonth + 1);
+                } else {
+                    eestrmn = "" + (eemonth + 1);
+                }
+                if (eehr < 10){
+                    eestrhr = "0" + eehr;
+                } else {
+                    eestrhr = "" + eehr;
+                }
+                if (eemin < 10){
+                    eestrmin = "0" + eemin;
+                } else {
+                    eestrmin = "" + eemin;
+                }
+                startDateView.setText(ssyear + "-" + ssstrmn + "-" + ssstrdt);
+                startTimeView.setText(ssstrhr + ":" + ssstrmin);
+                endDateView.setText(eeyear + "-" + eestrmn + "-" + eestrdt);
+                endTimeView.setText(eestrhr + ":" + eestrmin);
             }
+
+            String[] sssdd = ((String) startDateView.getText()).split("-");
+            startYr = Integer.parseInt(sssdd[0]);
+            startMn = Integer.parseInt(sssdd[1]) - 1;
+            startDt = Integer.parseInt(sssdd[2]);
+            String[] ssstt = ((String) startTimeView.getText()).split(":");
+            startHr = Integer.parseInt(ssstt[0]);
+            startMin = Integer.parseInt(ssstt[1]);
+
+            String[] eeedd = ((String) endDateView.getText()).split("-");
+            endYr = Integer.parseInt(eeedd[0]);
+            endMn = Integer.parseInt(eeedd[1]) - 1;
+            endDt = Integer.parseInt(eeedd[2]);
+            String[] eeett = ((String) endTimeView.getText()).split(":");
+            endHr = Integer.parseInt(eeett[0]);
+            endMin = Integer.parseInt(eeett[1]);
 
 
             if (!haveNetworkConnection()) {
@@ -300,9 +396,6 @@ public class NewEventActivity extends ActionBarActivity{
 //----------------------------------------------------------------------------------------------------
 // setting start and end time and date
 
-    private static int startHr = -1;
-    private static int startMin = -1;
-
 
     public void showStartTimePickerDialog(View v) {
         Log.e("showstarttime", "hereherehere");
@@ -322,12 +415,9 @@ public class NewEventActivity extends ActionBarActivity{
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-
-            Log.d("starttimedialog", "here");
-            // Use the current time as the default values for the picker
-            final Calendar c = Calendar.getInstance();
-            int hour = c.get(Calendar.HOUR_OF_DAY);
-            int minute = c.get(Calendar.MINUTE);
+            String[] ststr = ((String) ((TextView) v.findViewById(R.id.startTime)).getText()).split(":");
+            int hour = Integer.parseInt(ststr[0]);
+            int minute = Integer.parseInt(ststr[1]);
 
             // Create a new instance of TimePickerDialog and return it
             return new TimePickerDialog(getActivity(), this, hour, minute,
@@ -352,13 +442,8 @@ public class NewEventActivity extends ActionBarActivity{
                 strmin = "" + min;
             }
             st.setText(strhr + ":" + strmin);
-
         }
     }
-
-    private static int endHr = -1;
-    private static int endMin = -1;
-
 
     public void showEndTimePickerDialog(View v) {
         EndTimePickerFragment newFragment = new EndTimePickerFragment();
@@ -377,10 +462,9 @@ public class NewEventActivity extends ActionBarActivity{
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the current time as the default values for the picker
-            final Calendar c = Calendar.getInstance();
-            int hour = c.get(Calendar.HOUR_OF_DAY);
-            int minute = c.get(Calendar.MINUTE);
+            String[] etstr = ((String) ((TextView) v.findViewById(R.id.endTime)).getText()).split(":");
+            int hour = Integer.parseInt(etstr[0]);
+            int minute = Integer.parseInt(etstr[1]);
 
             // Create a new instance of TimePickerDialog and return it
             return new TimePickerDialog(getActivity(), this, hour, minute,
@@ -408,10 +492,6 @@ public class NewEventActivity extends ActionBarActivity{
     }
 
 
-    private static int startYr = -1;
-    private static int startMn = -1;
-    private static int startDt = -1;
-
 
     public void showStartDatePickerDialog(View v) {
         StartDatePickerFragment newFragment = new StartDatePickerFragment();
@@ -430,11 +510,10 @@ public class NewEventActivity extends ActionBarActivity{
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the current date as the default date in the picker
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
+            String[] sdstr = ((String) ((TextView) v.findViewById(R.id.startDate)).getText()).split("-");
+            int year = Integer.parseInt(sdstr[0]);
+            int month = Integer.parseInt(sdstr[1]) - 1;
+            int day = Integer.parseInt(sdstr[2]);
 
             // Create a new instance of DatePickerDialog and return it
             return new DatePickerDialog(getActivity(), this, year, month, day);
@@ -459,15 +538,14 @@ public class NewEventActivity extends ActionBarActivity{
                 strmn = "" + (month + 1);
             }
             sd.setText(year + "-" + strmn + "-" + strdt);
+            TextView ed = (TextView) ((View) v.getParent()).findViewById(R.id.endDate);
+            endYr = year;
+            endMn = month;
+            endDt = day;
+            ed.setText(year + "-" + strmn + "-" + strdt);
         }
 
     }
-
-
-
-    private static int endYr = -1;
-    private static int endMn = -1;
-    private static int endDt = -1;
 
 
     public void showEndDatePickerDialog(View v) {
@@ -487,11 +565,10 @@ public class NewEventActivity extends ActionBarActivity{
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the current date as the default date in the picker
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
+            String[] edstr = ((String) ((TextView) v.findViewById(R.id.endDate)).getText()).split("-");
+            int year = Integer.parseInt(edstr[0]);
+            int month = Integer.parseInt(edstr[1]) - 1;
+            int day = Integer.parseInt(edstr[2]);
 
             // Create a new instance of DatePickerDialog and return it
             return new DatePickerDialog(getActivity(), this, year, month, day);
@@ -538,7 +615,7 @@ public class NewEventActivity extends ActionBarActivity{
 
             if (sd.before(currd)){
                 showDialog(v, "Invalid Date/Time", "Start Time is at/before Current Time");
-            } else if (ed.before(sd)){
+            } else if (!ed.after(sd)){
                 showDialog(v, "Invalid Date/Time", "End Time is before Start Time");
             } else {
                 String nameStr = ((EditText) par.findViewById(R.id.eventName)).getText().toString();
