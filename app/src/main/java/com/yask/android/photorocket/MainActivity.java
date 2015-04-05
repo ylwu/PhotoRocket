@@ -109,9 +109,9 @@ public class MainActivity extends ActionBarActivity {
         if (id == R.id.action_newEvent){
             startActivity(new Intent(this,NewEventActivity.class));
         }
-        if (id == R.id.action_sync_events) {
-            Utils.syncEventsByCurrentUser();
-        }
+//        if (id == R.id.action_sync_events) {
+//            Utils.syncEventsByCurrentUser();
+//        }
         if (id == R.id.action_save_photo) {
             new FetchAndSavePhotoLocallyTask().execute();
         }
@@ -243,6 +243,7 @@ public class MainActivity extends ActionBarActivity {
     public static class MainMenuFragment extends Fragment {
 
         public EventListAdapter eventListAdapter;
+        public ListView eventListView;
 
         private static final String APP_NAME = "PhotoRocket";
         private static final int MEDIA_TYPE_IMAGE = 1;
@@ -269,7 +270,7 @@ public class MainActivity extends ActionBarActivity {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             eventListAdapter = new EventListAdapter(this.getActivity(), MainMenuFragment.this, false);
             eventListAdapter.setTextKey(Event.NAME_KEY);
-            final ListView eventListView = (ListView) rootView.findViewById(R.id.listview_main);
+            eventListView = (ListView) rootView.findViewById(R.id.listview_main);
             if (eventListView == null){
                 Log.d("parse", "listView null");
             }

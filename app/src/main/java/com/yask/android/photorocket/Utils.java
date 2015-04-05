@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
 /**
  * Created by ylwu on 3/7/15.
  */
@@ -66,7 +65,7 @@ public class Utils {
                         public void done(ParseException e) {
                             if (e == null) {
                                 Log.d("parse user", "succesfully add participant");
-                                Utils.syncEventsByCurrentUser();
+                                Utils.syncEventsByCurrentUser(fragment);
                             } else {
                                 Log.e("parse user", e.getLocalizedMessage());
                             }
@@ -144,7 +143,7 @@ public class Utils {
     /*
         Download events from cloud and save to local database
      */
-    public static void syncEventsByCurrentUser(){
+    public static void syncEventsByCurrentUser(final MainActivity.MainMenuFragment fragment){
         ParseQuery<Event> query = new ParseQuery<Event>("Event");
         Log.d("parse",ParseUser.getCurrentUser().getUsername());
         query.whereEqualTo("participants", ParseUser.getCurrentUser());
@@ -157,7 +156,7 @@ public class Utils {
                         @Override
                         public void done(ParseException e) {
                             if (e == null){
-                                Log.d("parse MainActivity", "synced events");
+                                fragment.eventListAdapter.loadObjects();
                             } else {
                                 Log.e("parse MainActivity", e.getLocalizedMessage());
                             }
