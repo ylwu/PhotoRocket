@@ -68,8 +68,9 @@ public class EventListAdapter extends ParseQueryAdapter<Event> {
             camera_icon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    MainActivity.MainMenuFragment.EVENT_ID = current_event.getObjectId(); // Set event ID
-                    ((MainActivity.MainMenuFragment)eventFragment).takePhoto();
+                    //TODO: fix following line
+                    FutureEventsFragment.EVENT_ID = current_event.getObjectId(); // Set event ID
+                    ((FutureEventsFragment)eventFragment).takePhoto();
                 }
             });
 

@@ -78,6 +78,7 @@ public class PhotosAdapter extends ParseQueryAdapter<Photo>{
 
     @Override
     public View getItemView(Photo photo, View v, ViewGroup parent) {
+        Log.d("parse", "get photo view");
         if (v == null) {
             v = View.inflate(getContext(), R.layout.photo_in_grid, null);
             int columns = 3;

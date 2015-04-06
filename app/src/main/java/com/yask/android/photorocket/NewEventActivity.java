@@ -84,9 +84,6 @@ public class NewEventActivity extends ActionBarActivity{
         }
     }
 
-
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -117,7 +114,6 @@ public class NewEventActivity extends ActionBarActivity{
             startActivity(i);
         }
     }
-
 
     /*=*/ //use this to save event
     //Helper function to save an Event
@@ -153,7 +149,6 @@ public class NewEventActivity extends ActionBarActivity{
     /*=*/ //use this to update event
     //Helper function to update an Event
     private void updateEvent(String eventID, String eventName, Date startTime,final Date endTime){
-//            Log.d("parse", "loading from parse");
 //            ParseQuery query = new ParseQuery("Event");
 //            query.whereEqualTo("objectId", eventID);
 
@@ -178,32 +173,6 @@ public class NewEventActivity extends ActionBarActivity{
                 }
             }
         });
-
-
-
-//        final Event event = new Event(eventName,startTime,endTime);
-//        NotificationAlarmReceiver.setAlarm(getApplicationContext(), startTime);
-//
-//        //event is first saved locally and then saved in cloud
-//        event.pinInBackground(new SaveCallback() {
-//            @Override
-//            public void done(ParseException e) {
-//                if (e == null){
-//                    Log.d("parse NewEventActivity", "event updated locally");
-//                    event.saveEventually(new SaveCallback() {
-//                        @Override
-//                        public void done(ParseException e) {
-//                            if (e != null){
-//                                Log.e("parse error",e.getLocalizedMessage());
-//                            } else {
-//                                UploadAlarmReceiver.setAlarm(getApplicationContext(), endTime, event.getObjectId());
-//                                Log.d("parse NewEventActivity", "event updated in cloud");
-//                            }
-//                        }
-//                    });
-//                }
-//            }
-//        });
     }
 
 
@@ -235,7 +204,6 @@ public class NewEventActivity extends ActionBarActivity{
             this.ed = ed;
             this.et = et;
         }
-
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
