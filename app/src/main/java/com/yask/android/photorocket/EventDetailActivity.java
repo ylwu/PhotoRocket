@@ -11,7 +11,6 @@ import android.widget.GridView;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
-import com.parse.ParseQueryAdapter;
 import com.parse.SaveCallback;
 
 import java.util.List;
@@ -24,7 +23,6 @@ public class EventDetailActivity extends ActionBarActivity {
     private boolean isPast;
     private GridView gridView;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("parse activity", "create activity again");
@@ -35,31 +33,8 @@ public class EventDetailActivity extends ActionBarActivity {
         if (intent != null && intent.hasExtra(Event.ID_TEXT)) {
             eventID = intent.getStringExtra(Event.ID_TEXT);
             isPast = intent.getBooleanExtra(Event.ISPAST_TEXT, false);
-            Log.d("parse event is past", String.valueOf(intent.getBooleanExtra(Event.ISPAST_TEXT, false)));
-
         }
-        //put photosAdapter in a ListView or GridView
         photosAdapter = new PhotosAdapter(this, eventID);
-
-        photosAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener<Photo>() {
-            @Override
-            public void onLoading() {
-
-            }
-
-            @Override
-            public void onLoaded(List<Photo> photos, Exception e) {
-                for (Photo p: photos){
-                    Log.d("parse adpater photo id", p.getObjectId());
-                }
-            }
-        });
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d("parse", "detail activity destroyed");
     }
 
     @Override
@@ -145,7 +120,6 @@ public class EventDetailActivity extends ActionBarActivity {
         if (id == R.id.action_upload) {
             Utils.uploadPhotosToParse(eventID);
         }
-
         return super.onOptionsItemSelected(item);
     }
 
