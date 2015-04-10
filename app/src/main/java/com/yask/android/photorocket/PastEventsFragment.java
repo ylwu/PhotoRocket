@@ -16,7 +16,7 @@ import android.widget.ListView;
  */
 public class PastEventsFragment extends Fragment {
 
-    private EventListAdapter eventListAdapter;
+    public EventListAdapter eventListAdapter;
 
     public PastEventsFragment() {
 
@@ -48,11 +48,5 @@ public class PastEventsFragment extends Fragment {
         });
 
         return rootView;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        eventListAdapter.loadObjects();
     }
 }
