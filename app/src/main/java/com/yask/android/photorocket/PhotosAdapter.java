@@ -78,7 +78,6 @@ public class PhotosAdapter extends ParseQueryAdapter<Photo>{
 
     @Override
     public View getItemView(Photo photo, View v, ViewGroup parent) {
-        Log.d("parse", "get photo view");
         if (v == null) {
             v = View.inflate(getContext(), R.layout.photo_in_grid, null);
             int columns = 3;
@@ -94,6 +93,7 @@ public class PhotosAdapter extends ParseQueryAdapter<Photo>{
             if (photo.isSavedInCloud()) {
                 ParseFile imageFile = photo.getParseFile("content");
                 Log.d("parsePhotosApapter", "find a saved photo");
+                Log.d("parsePhotos",photo.getObjectId());
                 if (imageFile != null) {
                     BitmapFactory.Options options = new BitmapFactory.Options();
                     options.inSampleSize = 3;

@@ -55,6 +55,10 @@ public class MainActivity extends ActionBarActivity {
         if (id == R.id.action_clear_local_data) {
             clearLocalData();
         }
+        if (id == R.id.action_sync_events) {
+            syncEventsByCurrentUser((FutureEventsFragment)getSupportFragmentManager().findFragmentById(R.id.container));
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

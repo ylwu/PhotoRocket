@@ -22,6 +22,7 @@ public class PhotoRocketApplication extends Application{
 
         ParseObject.registerSubclass(Event.class);
         ParseObject.registerSubclass(Photo.class);
+        ParseObject.registerSubclass(EventToUpload.class);
         // Enable Local Datastore.
         Parse.enableLocalDatastore(this);
 

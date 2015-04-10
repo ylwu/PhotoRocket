@@ -10,8 +10,8 @@ import android.widget.GridView;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseQueryAdapter;
 import com.parse.SaveCallback;
 
 import java.util.List;
@@ -19,11 +19,10 @@ import java.util.List;
 
 public class EventDetailActivity extends ActionBarActivity {
 
-    public static String TEST_EVENT_ID = "yorLShkZPR";
-
     private PhotosAdapter photosAdapter;
     private String eventID;
     private boolean isPast;
+    private GridView gridView;
 
 
     @Override
@@ -31,7 +30,7 @@ public class EventDetailActivity extends ActionBarActivity {
         Log.d("parse activity", "create activity again");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_detail);
-        GridView gridView = (GridView) findViewById(R.id.gridView2);
+        gridView = (GridView) findViewById(R.id.gridView2);
         Intent intent = this.getIntent();
         if (intent != null && intent.hasExtra(Event.ID_TEXT)) {
             eventID = intent.getStringExtra(Event.ID_TEXT);
@@ -41,44 +40,79 @@ public class EventDetailActivity extends ActionBarActivity {
         }
         //put photosAdapter in a ListView or GridView
         photosAdapter = new PhotosAdapter(this, eventID);
-        gridView.setAdapter(photosAdapter);
+
+        photosAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener<Photo>() {
+            @Override
+            public void onLoading() {
+
+            }
+
+            @Override
+            public void onLoaded(List<Photo> photos, Exception e) {
+                for (Photo p: photos){
+                    Log.d("parse adpater photo id", p.getObjectId());
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("parse", "detail activity destroyed");
     }
 
     @Override
     protected void onStart() {
-        if (isPast) loadPhotosFromParse(eventID);
+        if (isPast) {
+            loadPhotosFromParse(eventID);
+        } else {
+            gridView.setAdapter(photosAdapter);
+        }
         super.onStart();
     }
 
-    private void loadPhotosFromParse(String eventID) {
+    private void loadPhotosFromParse(final String eventID) {
         final ParseQuery query = new ParseQuery("Photo");
         query.whereEqualTo(Photo.EVENT_ID_KEY, eventID);
         query.findInBackground(new FindCallback<Photo>() {
             @Override
             public void done(final List<Photo> photos, ParseException e) {
+                Log.d("parse event id", eventID);
+                Log.d("num of remote photos", String.valueOf(photos.size()));
                 if (e == null) {
-                    query.fromLocalDatastore();
-                    query.findInBackground(new FindCallback<Photo>() {
+                    final ParseQuery localQuery = new ParseQuery("Photo");
+                    localQuery.whereEqualTo(Photo.EVENT_ID_KEY, eventID);
+                    localQuery.fromLocalDatastore();
+                    localQuery.findInBackground(new FindCallback<Photo>() {
                         @Override
                         public void done(List<Photo> localPhotos, ParseException e) {
-                            Log.d("parse num photos", String.valueOf(photos.size()));
+                            Log.d("parse num local photos", String.valueOf(localPhotos.size()));
                             if (photos.size() != localPhotos.size()) {
+                                for (Photo p: photos){
+                                    Log.d("parse fetching photo id", p.getObjectId());
+                                }
                                 //there are new remote photos
                                 Log.d("parse", "new photos coming");
-                                ParseObject.pinAllInBackground((List<Photo>) photos,
+                                Photo.pinAllInBackground((List<Photo>) photos,
                                         new SaveCallback() {
                                             @Override
                                             public void done(ParseException e) {
                                                 if (e == null) {
                                                     Log.d("ParseEventDetail", "savedtolocal");
                                                     if (!isFinishing()) {
+                                                        Log.d("ParseEventDetail", "reload");
                                                         photosAdapter.loadObjects();
+                                                        gridView.setAdapter(photosAdapter);
                                                     }
                                                 } else {
                                                     Log.e("parse", "error pinning photos: " + e.getMessage());
                                                 }
                                             }
                                         });
+                            } else {
+                                photosAdapter.loadObjects();
+                                gridView.setAdapter(photosAdapter);
                             }
                         }
                     });
@@ -90,7 +124,6 @@ public class EventDetailActivity extends ActionBarActivity {
             }
         });
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -133,6 +133,13 @@ public class NewEventActivity extends ActionBarActivity{
                             if (e != null){
                                 Log.e("parse error",e.getLocalizedMessage());
                             } else {
+                                EventToUpload eventToUpload = new EventToUpload(event.getObjectId(),event.getStartTime(),event.getEndTime());
+                                eventToUpload.pinInBackground(new SaveCallback() {
+                                    @Override
+                                    public void done(ParseException e) {
+                                        Log.d("parse eventToUpload", "saved");
+                                    }
+                                });
                                 UploadAlarmReceiver.setAlarm(getApplicationContext(), endTime, event.getObjectId());
                                 String s = (String) ((TextView) findViewById(R.id.invited)).getText();
                                 String[] ss = s.split("\n");
