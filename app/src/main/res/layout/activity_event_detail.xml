@@ -7,6 +7,9 @@
     <GridView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:descendantFocusability="blocksDescendants"
+        android:clickable="true"
+        android:focusable="true"
         android:id="@+id/gridView2"
         android:numColumns="3"
         android:layout_gravity="center" />
