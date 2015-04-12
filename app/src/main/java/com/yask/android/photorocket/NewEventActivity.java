@@ -78,8 +78,17 @@ public class NewEventActivity extends ActionBarActivity{
 
         setContentView(R.layout.activity_new_event);
         if (savedInstanceState == null) {
+            PlaceholderFragment placeholderFragment = new PlaceholderFragment();
+            Bundle args = new Bundle();
+            args.putBoolean("isNewEvent",isNewEvent);
+            args.putString(Event.NAME_KEY, eventName);
+            args.putString("StartDate",eventStartDate);
+            args.putString("StartTime",eventStartTime);
+            args.putString("EndDate",eventEndDate);
+            args.putString("EndTime",eventEndTime);
+            placeholderFragment.setArguments(args);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment(isNewEvent, eventName, eventStartDate, eventStartTime, eventEndDate, eventEndTime))
+                    .add(R.id.container, placeholderFragment)
                     .commit();
         }
     }
@@ -133,6 +142,13 @@ public class NewEventActivity extends ActionBarActivity{
                             if (e != null){
                                 Log.e("parse error",e.getLocalizedMessage());
                             } else {
+                                EventToUpload eventToUpload = new EventToUpload(event.getObjectId(),event.getStartTime(),event.getEndTime());
+                                eventToUpload.pinInBackground(new SaveCallback() {
+                                    @Override
+                                    public void done(ParseException e) {
+                                        Log.d("parse eventToUpload", "saved");
+                                    }
+                                });
                                 UploadAlarmReceiver.setAlarm(getApplicationContext(), endTime, event.getObjectId());
                                 String s = (String) ((TextView) findViewById(R.id.invited)).getText();
                                 String[] ss = s.split("\n");
@@ -196,13 +212,20 @@ public class NewEventActivity extends ActionBarActivity{
     public static class PlaceholderFragment extends Fragment {
         private String name, sd, st, ed, et;
         private boolean isNewEvent;
-        public PlaceholderFragment(boolean isNewEvent, String name, String sd, String st, String ed, String et) {
-            this.isNewEvent = isNewEvent;
-            this.name = name;
-            this.sd = sd;
-            this.st = st;
-            this.ed = ed;
-            this.et = et;
+
+        public PlaceholderFragment(){
+
+        }
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            isNewEvent = getArguments().getBoolean("isNewEvent");
+            name = getArguments().getString(Event.NAME_KEY);
+            sd = getArguments().getString("StartDate");
+            st = getArguments().getString("StartTime");
+            ed = getArguments().getString("EndDate");
+            et = getArguments().getString("EndTime");
         }
 
         @Override

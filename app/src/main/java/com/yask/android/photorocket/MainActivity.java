@@ -1,5 +1,6 @@
 package com.yask.android.photorocket;
 
+import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -55,6 +56,10 @@ public class MainActivity extends ActionBarActivity {
         if (id == R.id.action_clear_local_data) {
             clearLocalData();
         }
+        if (id == R.id.action_sync_events) {
+            syncEventsByCurrentUser(getSupportFragmentManager().findFragmentById(R.id.container));
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -101,9 +106,9 @@ public class MainActivity extends ActionBarActivity {
     }
 
     /*
-        Download events from cloud and save to local database
+        Download future events from cloud and save to local database
      */
-    public void syncEventsByCurrentUser(final FutureEventsFragment fragment){
+    public void syncEventsByCurrentUser(final Fragment fragment){
         ParseQuery<Event> query = new ParseQuery<Event>("Event");
         query.whereEqualTo("participants", ParseUser.getCurrentUser());
         query.include("participants");
@@ -115,7 +120,12 @@ public class MainActivity extends ActionBarActivity {
                         @Override
                         public void done(ParseException e) {
                             if (e == null) {
-                                fragment.eventListAdapter.loadObjects();
+                                if (fragment instanceof FutureEventsFragment){
+                                    ((FutureEventsFragment)fragment).eventListAdapter.loadObjects();
+                                } else if (fragment instanceof  PastEventsFragment) {
+                                    ((PastEventsFragment)fragment).eventListAdapter.loadObjects();
+                                }
+
                             } else {
                                 Log.e("parse MainActivity", e.getLocalizedMessage());
                             }
@@ -128,6 +138,4 @@ public class MainActivity extends ActionBarActivity {
             }
         });
     }
-
-
 }
