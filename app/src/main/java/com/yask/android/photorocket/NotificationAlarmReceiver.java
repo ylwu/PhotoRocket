@@ -22,7 +22,7 @@ public class NotificationAlarmReceiver extends BroadcastReceiver {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
                         .setContentTitle("PhotoRocket Event")
-                        .setSmallIcon(R.drawable.camera_icon)
+                        .setSmallIcon(R.drawable.app_icon)
                         .setContentText("Tap to take pictures");
         int mNotificationId = 002;
         Intent resultIntent = new Intent(context, MainActivity.class);
