@@ -1,12 +1,14 @@
 package com.yask.android.photorocket;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 
-import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -19,6 +21,24 @@ import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity {
+
+    public static final String ACTION_RESET = "photorocket.mainactivity.RESET";
+
+    public BroadcastReceiver resetReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
+            refreshFragment(fragment);
+        }
+    };
+
+    public void refreshFragment(Fragment fragment){
+        if (fragment instanceof FutureEventsFragment){
+            ((FutureEventsFragment)fragment).eventListAdapter.loadObjects();
+        } else if (fragment instanceof  PastEventsFragment) {
+            ((PastEventsFragment)fragment).eventListAdapter.loadObjects();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +57,16 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    public void clearLocalData() {
-        Photo.unpinAllInBackground(new DeleteCallback() {
-            @Override
-            public void done(ParseException e) {
-                Log.e("parse", "cleared local data");
-            }
-        });
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(resetReceiver);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(resetReceiver,new IntentFilter(ACTION_RESET));
     }
 
     protected void savePhotoLocally(final String eventID, String locaImageURI){
@@ -94,12 +117,7 @@ public class MainActivity extends ActionBarActivity {
                         @Override
                         public void done(ParseException e) {
                             if (e == null) {
-                                if (fragment instanceof FutureEventsFragment){
-                                    ((FutureEventsFragment)fragment).eventListAdapter.loadObjects();
-                                } else if (fragment instanceof  PastEventsFragment) {
-                                    ((PastEventsFragment)fragment).eventListAdapter.loadObjects();
-                                }
-
+                                refreshFragment(fragment);
                             } else {
                                 Log.e("parse MainActivity", e.getLocalizedMessage());
                             }

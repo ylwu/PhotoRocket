@@ -26,9 +26,12 @@ public class UploadAlarmReceiver extends BroadcastReceiver {
     public static void  setAlarm(Context context, Date startTime, String eventID){
         Intent intent = new Intent(context.getApplicationContext() , UploadAlarmReceiver.class);
         intent.putExtra(Event.ID_TEXT, eventID);
+        Intent refreshIntent = new Intent(MainActivity.ACTION_RESET);
         PendingIntent pendingIntent  = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingRefreshIntent  = PendingIntent.getBroadcast(context, 0, refreshIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         am.set(AlarmManager.RTC, startTime.getTime(), pendingIntent);
+        am.set(AlarmManager.RTC, startTime.getTime(), pendingRefreshIntent);
     }
 }
