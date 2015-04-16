@@ -1,12 +1,10 @@
 package com.yask.android.photorocket;
 
-import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
@@ -37,30 +35,6 @@ public class MainActivity extends ActionBarActivity {
             // used magic number 15 to get rid of prefix
             joinEvent(intent.getDataString().substring(15), futureEventsFragment);
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        Log.d("parse","Menu Options");
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_clear_local_data) {
-            clearLocalData();
-        }
-        if (id == R.id.action_sync_events) {
-            syncEventsByCurrentUser(getSupportFragmentManager().findFragmentById(R.id.container));
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     public void clearLocalData() {
