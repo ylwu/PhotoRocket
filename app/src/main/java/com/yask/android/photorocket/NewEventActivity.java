@@ -126,7 +126,7 @@ public class NewEventActivity extends ActionBarActivity{
 
     /*=*/ //use this to save event
     //Helper function to save an Event
-    private void saveEvent(String eventName, Date startTime,final Date endTime){
+    private void saveEvent(String eventName, Date startTime,final Date endTime, final View v){
         final Event event = new Event(eventName,startTime,endTime);
         NotificationAlarmReceiver.setAlarm(getApplicationContext(), startTime);
 
@@ -152,7 +152,18 @@ public class NewEventActivity extends ActionBarActivity{
                                 UploadAlarmReceiver.setAlarm(getApplicationContext(), endTime, event.getObjectId());
                                 String s = (String) ((TextView) findViewById(R.id.invited)).getText();
                                 String[] ss = s.split("\n");
-                                sendInvitations(Arrays.asList(ss), event.getObjectId());
+
+
+
+                                Log.d("sendinvites", Integer.toString(ss.length));
+                                Log.d("sendinvites", "[" + ss[0] + "]");
+                                if (ss.length > 0 && ! ss[0].equals("")){
+                                    sendInvitations(Arrays.asList(ss), event.getObjectId());
+                                    Log.d("sendinvites", "inside");
+                                } else {
+                                    Intent i = new Intent(v.getContext(), MainActivity.class);
+                                    startActivity(i);
+                                }
                                 Log.d("parse NewEventActivity", "event saved in cloud");
                             }
                         }
@@ -164,7 +175,7 @@ public class NewEventActivity extends ActionBarActivity{
 
     /*=*/ //use this to update event
     //Helper function to update an Event
-    private void updateEvent(String eventID, String eventName, Date startTime,final Date endTime){
+    private void updateEvent(String eventID, String eventName, Date startTime,final Date endTime, final View v){
 //            ParseQuery query = new ParseQuery("Event");
 //            query.whereEqualTo("objectId", eventID);
 
@@ -184,7 +195,16 @@ public class NewEventActivity extends ActionBarActivity{
                     UploadAlarmReceiver.setAlarm(getApplicationContext(), endTime, eventId);
                     String s = (String) ((TextView) findViewById(R.id.invited)).getText();
                     String[] ss = s.split("\n");
-                    sendInvitations(Arrays.asList(ss), eventId);
+
+                    Log.d("sendinvites", Integer.toString(ss.length));
+                    Log.d("sendinvites", "[" + ss[0] + "]");
+                    if (ss.length > 0 && ! ss[0].equals("")){
+                        sendInvitations(Arrays.asList(ss), eventId);
+                        Log.d("sendinvites", "inside");
+                    } else {
+                        Intent i = new Intent(v.getContext(), MainActivity.class);
+                        startActivity(i);
+                    }
                     Log.d("parse NewEventActivity", "event updated in cloud");
                 }
             }
@@ -615,10 +635,10 @@ public class NewEventActivity extends ActionBarActivity{
                 } else {
                     //call save or update
                     if (isNewEvent) {
-                        saveEvent(nameStr, sd, ed);
+                        saveEvent(nameStr, sd, ed, v);
                     }
                     else {
-                        updateEvent(this.eventId, nameStr, sd, ed);
+                        updateEvent(this.eventId, nameStr, sd, ed, v);
                     }
 
 //                    String s = (String) ((TextView) par.findViewById(R.id.invited)).getText();
