@@ -74,7 +74,8 @@ public class FutureEventsFragment extends android.support.v4.app.Fragment {
                     intent = new Intent(view.getContext(), EventDetailActivity.class)
                             .putExtra(Event.ID_TEXT, event.getObjectId())
                             .putExtra(Event.ISFUTURE_TEXT, event.isFuture())
-                            .putExtra(Event.ISPAST_TEXT, event.isPast());
+                            .putExtra(Event.ISPAST_TEXT, event.isPast())
+                            .putExtra(Event.NAME_KEY, event.getEventName());
                 } else {
 
                     Date ssstart = event.getStartTime();

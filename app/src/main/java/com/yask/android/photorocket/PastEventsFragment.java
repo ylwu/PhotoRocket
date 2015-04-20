@@ -42,7 +42,8 @@ public class PastEventsFragment extends Fragment {
                 Intent intent = new Intent(view.getContext(),EventDetailActivity.class)
                         .putExtra(Event.ID_TEXT,event.getObjectId())
                         .putExtra(Event.ISFUTURE_TEXT,event.isFuture())
-                        .putExtra(Event.ISPAST_TEXT,event.isPast());
+                        .putExtra(Event.ISPAST_TEXT,event.isPast())
+                        .putExtra(Event.NAME_KEY, event.getEventName());
                 startActivity(intent);
             }
         });

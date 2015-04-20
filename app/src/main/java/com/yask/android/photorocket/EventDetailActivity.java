@@ -1,5 +1,6 @@
 package com.yask.android.photorocket;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -19,9 +20,11 @@ import java.util.List;
 public class EventDetailActivity extends ActionBarActivity {
 
     private PhotosAdapter photosAdapter;
+    private String eventName;
     private String eventID;
     private boolean isPast;
     private GridView gridView;
+    private ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +36,13 @@ public class EventDetailActivity extends ActionBarActivity {
         if (intent != null && intent.hasExtra(Event.ID_TEXT)) {
             eventID = intent.getStringExtra(Event.ID_TEXT);
             isPast = intent.getBooleanExtra(Event.ISPAST_TEXT, false);
+            eventName = intent.getStringExtra(Event.NAME_KEY);
         }
         photosAdapter = new PhotosAdapter(this, eventID);
+        actionBar = getActionBar();
+        if (actionBar != null){
+            actionBar.setTitle(eventName);
+        }
     }
 
     @Override
