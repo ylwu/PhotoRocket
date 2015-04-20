@@ -52,7 +52,7 @@ public class EventListAdapter extends ParseQueryAdapter<Event> {
     public View getItemView(Event event, View view, ViewGroup parent){
 
         final Event current_event = event;
-        SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm a, LLL dd", Locale.US);
+        SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm, LLL dd", Locale.US);
 
         if (event.isOccuring()){
             view = View.inflate(getContext(), R.layout.list_view_active_event, null);

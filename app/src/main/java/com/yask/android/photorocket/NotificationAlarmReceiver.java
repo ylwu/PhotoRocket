@@ -22,7 +22,7 @@ public class NotificationAlarmReceiver extends BroadcastReceiver {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
                         .setContentTitle("PhotoRocket Event")
-                        .setSmallIcon(R.drawable.camera_icon)
+                        .setSmallIcon(R.drawable.app_icon)
                         .setContentText("Tap to take pictures");
         int mNotificationId = 002;
         Intent resultIntent = new Intent(context, MainActivity.class);
@@ -41,13 +41,16 @@ public class NotificationAlarmReceiver extends BroadcastReceiver {
                 (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
         // Builds the notification and issues it.
         mNotifyMgr.notify(mNotificationId, mBuilder.build());
+
+        //Notify MainActivity to refresh
+        Intent refreshIntent = new Intent(MainActivity.ACTION_RESET);
+        context.sendBroadcast(refreshIntent);
     }
 
     public static void  setAlarm(Context context, Date startTime){
         Intent intent = new Intent(context.getApplicationContext() , NotificationAlarmReceiver.class);
         PendingIntent pendingIntent  = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        am.setExact(AlarmManager.RTC, startTime.getTime(), pendingIntent);
+        am.set(AlarmManager.RTC, startTime.getTime(), pendingIntent);
     }
 }

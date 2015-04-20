@@ -2,6 +2,7 @@ package com.yask.android.photorocket;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.DisplayMetrics;
@@ -15,6 +16,7 @@ import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -80,16 +82,17 @@ public class PhotosAdapter extends ParseQueryAdapter<Photo>{
     public View getItemView(Photo photo, View v, ViewGroup parent) {
         if (v == null) {
             v = View.inflate(getContext(), R.layout.photo_in_grid, null);
+
             int columns = 3;
             DisplayMetrics displaymetrics = new DisplayMetrics();
             ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
             int picSize = displaymetrics.widthPixels / columns;
-
             super.getItemView(photo, v, parent);
 
             // Add and download the image
             ImageView todoImage = (ImageView) v.findViewById(R.id.icon);
             Log.d("parsePhotosApapter", "find a photo");
+            Bitmap bitmap = null;
             if (photo.isSavedInCloud()) {
                 ParseFile imageFile = photo.getParseFile("content");
                 Log.d("parsePhotosApapter", "find a saved photo");
@@ -101,12 +104,8 @@ public class PhotosAdapter extends ParseQueryAdapter<Photo>{
 
                         //imageFile.getData();
 
-                    Bitmap bitmap = decodeByte(imageFile.getData(), picSize, picSize);
+                    bitmap = decodeByte(imageFile.getData(), picSize, picSize);
                     todoImage.setImageBitmap(bitmap);
-                    if (bitmap != null) {
-                        //bitmap.recycle();
-                    }
-                    //bitmap = null;
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -115,7 +114,6 @@ public class PhotosAdapter extends ParseQueryAdapter<Photo>{
                 //Magic number 7 is the amount of characters that needs to be truncated from the beginning of the URI to the actrual useful URI.
                 //removes the 'file://' at the beginning of string.
                 File img = new File(photo.getLocaURIString().substring(7));
-                System.out.println(photo.getLocaURIString().substring(7));
                 FileInputStream fis = null;
                 try {
                     fis = new FileInputStream(img);
@@ -125,15 +123,44 @@ public class PhotosAdapter extends ParseQueryAdapter<Photo>{
                 System.out.println("found photo not saved");
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inSampleSize = 8;
-                Bitmap bitmap = BitmapFactory.decodeStream(fis, null, options);
+                bitmap = BitmapFactory.decodeStream(fis, null, options);
                 todoImage.setImageBitmap(bitmap);
+
             }
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(picSize, picSize);
             todoImage.setLayoutParams(layoutParams);
+            v.setOnClickListener(new photoClickHandler(bitmap));
+            v.setClickable(true);
+            v.setFocusable(true);
+
             return v;
         }
         else {
             return v;
         }
     }
+
+
+    class photoClickHandler implements View.OnClickListener {
+
+        Bitmap bitmap;
+        String parseObjectId;
+        File f = null;
+        photoClickHandler(Bitmap b){
+            this.bitmap = b;
+        }
+
+
+
+
+        @Override
+        public void onClick(View v){
+            Intent i = new Intent(PhotosAdapter.this.getContext(), PhotoDetailActivity.class);
+            PhotoDataSingleton.getInstance().setData(bitmap);
+            PhotosAdapter.this.getContext().startActivity(i);
+        }
+    }
 }
+
+
+
