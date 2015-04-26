@@ -40,6 +40,7 @@ public class PastEventsFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Event event = eventListAdapter.getItem(position);
+
                 Intent intent = new Intent(view.getContext(),EventDetailActivity.class)
                         .putExtra(Event.ID_TEXT,event.getObjectId())
                         .putExtra(Event.ISFUTURE_TEXT,event.isFuture())

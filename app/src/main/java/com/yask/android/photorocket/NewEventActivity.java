@@ -18,7 +18,6 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -77,6 +76,7 @@ public class NewEventActivity extends ActionBarActivity{
         }
 
         setContentView(R.layout.activity_new_event);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         if (savedInstanceState == null) {
             PlaceholderFragment placeholderFragment = new PlaceholderFragment();
             Bundle args = new Bundle();
@@ -98,21 +98,6 @@ public class NewEventActivity extends ActionBarActivity{
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_new_event, menu);
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
