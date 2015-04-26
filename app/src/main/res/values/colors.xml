@@ -2,5 +2,6 @@
 <resources>
     <color name="light_grey">#D3D3D3</color>
     <color name="dark_grey">#323232</color>
-
+    <color name="purple">#551A8B</color>
+    <color name="light_purple">#ddd1e7</color>
 </resources>

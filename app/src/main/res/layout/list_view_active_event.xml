@@ -4,9 +4,11 @@
     android:layout_height="wrap_content">
 
     <ImageView
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="5dp"
         android:id="@+id/camera_button_view"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:src="@drawable/camera_icon"
         />
 
@@ -40,7 +42,7 @@
                 android:textSize="15sp"
                 android:text="Active:"
                 android:paddingRight="5dp"
-                android:textColor="#00FF00"
+                android:textColor="#551A8B"
                 />
 
             <TextView

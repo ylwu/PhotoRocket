@@ -1,6 +1,7 @@
 package com.yask.android.photorocket;
 
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -39,6 +41,7 @@ public class FutureEventsFragment extends android.support.v4.app.Fragment {
     public static String EVENT_ID;
     private Uri imageUri;
     private boolean isPast;
+    private ActionBar actionBar;
 
     public FutureEventsFragment() {
 
@@ -52,13 +55,20 @@ public class FutureEventsFragment extends android.support.v4.app.Fragment {
 //            getActivity().getSupportFragmentManager().popBackStack("main", FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        getActivity().setTitle("Current And Future Events");
         eventListAdapter = new EventListAdapter(this.getActivity(), FutureEventsFragment.this, false);
         eventListAdapter.setTextKey(Event.NAME_KEY);
         eventListView = (ListView) rootView.findViewById(R.id.listview_main);
+
         if (eventListView == null){
             Log.d("parse", "listView null");
         }
         eventListView.setAdapter(eventListAdapter);
+
+        if (eventListAdapter.getCount() == 0){
+            TextView no_events_tv = (TextView) rootView.findViewById(R.id.no_events_label);
+            no_events_tv.setVisibility(View.VISIBLE);
+        }
 
         eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

@@ -27,6 +27,7 @@ public class PastEventsFragment extends Fragment {
                              Bundle savedInstanceState) {
         Log.d("parse past events", "create view");
         View rootView = inflater.inflate(R.layout.fragment_past_events, container, false);
+        getActivity().setTitle("Past Events");
         eventListAdapter = new EventListAdapter(this.getActivity(),PastEventsFragment.this,true);
         eventListAdapter.setTextKey(Event.NAME_KEY);
         final ListView eventListView = (ListView) rootView.findViewById(R.id.listview_past_events);

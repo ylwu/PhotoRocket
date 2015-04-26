@@ -399,6 +399,7 @@ public class NewEventActivity extends ActionBarActivity{
             newInv.setText("");
         } else {
 //            inv.setText("[" + eventId + "][" + eventName + "][" + eventStartTime + "]");
+            Toast.makeText(getApplicationContext(), "Please enter an email address!", Toast.LENGTH_SHORT).show();
         }
     }
 

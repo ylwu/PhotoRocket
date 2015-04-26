@@ -1,44 +1,51 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+
+
+
+<FrameLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+>
+
+<ListView
+    android:background="@color/light_purple"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:textStyle="bold"
-            android:textSize="30sp"
-            android:id="@+id/title_label"
-            android:layout_centerHorizontal="true"
-            android:text="Events"/>
+    android:id="@+id/listview_main"
+    />
 
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:id="@+id/listview_main"
-            android:layout_below="@id/title_label"/>
+<TextView
+    android:id="@+id/no_events_label"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textSize="30dp"
+    android:text=""
+    android:layout_gravity="center_horizontal"
+    android:layout_marginRight="10dp"
+    android:layout_marginLeft="10dp"
+    android:visibility="gone"/>
 
-        <ImageButton
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/plus_icon"
-            android:layout_below="@+id/listview_main"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="50dip"
-            android:layout_marginTop="15dip"
-            android:id="@+id/add_new_event_button"/>
+<ImageButton
+    android:layout_gravity="bottom|right"
+    android:layout_marginBottom="20dp"
+    android:layout_marginRight="10dp"
+    android:layout_width="60dp"
+    android:layout_height="60dp"
+    android:background="@drawable/plus_icon"
+    android:id="@+id/add_new_event_button"/>
 
-        <ImageButton
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/history_icon"
-            android:layout_below="@+id/listview_main"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="50dip"
-            android:layout_marginTop="15dip"
-            android:id="@+id/history_button"/>
- </RelativeLayout>
+<ImageButton
+    android:layout_gravity="bottom|right"
+    android:layout_marginRight="10dp"
+    android:layout_marginBottom="100dp"
+    android:layout_width="60dp"
+    android:layout_height="60dp"
+    android:background="@drawable/history_icon"
+    android:layout_alignParentLeft="true"
+    android:id="@+id/history_button"/>
+
+</FrameLayout>
+
 
 
