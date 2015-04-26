@@ -27,7 +27,6 @@ public class EventDetailActivity extends ActionBarActivity {
         Log.d("parse activity", "create activity again");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_detail);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         gridView = (GridView) findViewById(R.id.gridView2);
         Intent intent = this.getIntent();
         if (intent != null && intent.hasExtra(Event.ID_TEXT)) {

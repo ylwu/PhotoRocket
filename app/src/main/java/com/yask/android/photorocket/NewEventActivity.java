@@ -76,7 +76,6 @@ public class NewEventActivity extends ActionBarActivity{
         }
 
         setContentView(R.layout.activity_new_event);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         if (savedInstanceState == null) {
             PlaceholderFragment placeholderFragment = new PlaceholderFragment();
             Bundle args = new Bundle();
