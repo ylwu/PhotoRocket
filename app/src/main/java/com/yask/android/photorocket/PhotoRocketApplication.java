@@ -3,6 +3,7 @@ package com.yask.android.photorocket;
 import android.app.Application;
 import android.util.Log;
 
+import com.crittercism.app.Crittercism;
 import com.parse.LogInCallback;
 import com.parse.Parse;
 import com.parse.ParseAnonymousUtils;
@@ -20,6 +21,7 @@ public class PhotoRocketApplication extends Application{
         super.onCreate();
         Log.d("parse", "start application");
 
+        Crittercism.initialize(getApplicationContext(), "553c471f7365f84f7d3d6fa8");
         ParseObject.registerSubclass(Event.class);
         ParseObject.registerSubclass(Photo.class);
         ParseObject.registerSubclass(EventToUpload.class);
