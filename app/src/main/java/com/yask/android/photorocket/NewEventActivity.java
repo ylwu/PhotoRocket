@@ -251,7 +251,8 @@ public class NewEventActivity extends ActionBarActivity{
                 startTimeView.setText(this.st);
                 endDateView.setText(this.ed);
                 endTimeView.setText(this.et);
-                createButton.setText("Update Event");
+                createButton.setBackground(getResources().getDrawable(R.drawable.check_mark));
+//                createButton.setText("Update Event");
             } else {
                 Calendar scal = Calendar.getInstance();
                 scal.add(Calendar.MINUTE, 5);
@@ -324,6 +325,8 @@ public class NewEventActivity extends ActionBarActivity{
                 startTimeView.setText(ssstrhr + ":" + ssstrmin);
                 endDateView.setText(eeyear + "-" + eestrmn + "-" + eestrdt);
                 endTimeView.setText(eestrhr + ":" + eestrmin);
+                createButton.setBackground(getResources().getDrawable(R.drawable.plus_icon));
+
             }
 
             String[] sssdd = ((String) startDateView.getText()).split("-");

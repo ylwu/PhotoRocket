@@ -99,9 +99,9 @@
 
     <Button
         style="?android:attr/buttonStyleSmall"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="@drawable/plus_icon"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/add_email"
         android:clickable="true"
         android:id="@+id/addButton"
         android:layout_alignBottom="@+id/invites"
