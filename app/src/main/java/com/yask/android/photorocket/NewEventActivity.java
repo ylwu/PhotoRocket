@@ -254,7 +254,7 @@ public class NewEventActivity extends ActionBarActivity{
 //                createButton.setText("Update Event");
             } else {
                 Calendar scal = Calendar.getInstance();
-                scal.add(Calendar.MINUTE, 5);
+                scal.add(Calendar.MINUTE, 1);
 
                 int ssyear = scal.get(Calendar.YEAR);
                 int ssmonth = scal.get(Calendar.MONTH);
@@ -288,7 +288,7 @@ public class NewEventActivity extends ActionBarActivity{
                 }
 
                 Calendar ecal = Calendar.getInstance();
-                ecal.add(Calendar.MINUTE, 35);
+                ecal.add(Calendar.MINUTE, 2);
 
                 int eeyear = ecal.get(Calendar.YEAR);
                 int eemonth = ecal.get(Calendar.MONTH);
