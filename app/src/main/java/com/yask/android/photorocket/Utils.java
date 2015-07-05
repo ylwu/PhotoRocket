@@ -1,7 +1,5 @@
 package com.yask.android.photorocket;
 
-import android.util.Log;
-
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -30,7 +28,6 @@ public class Utils {
                     @Override
                     public void done(List<EventToUpload> eventToUploads, ParseException e) {
                         for (EventToUpload eventToUpload: eventToUploads){
-                            Log.d("parse delete toupload", eventID);
                             eventToUpload.unpinInBackground();
                         }
                     }
@@ -51,16 +48,12 @@ public class Utils {
                                     @Override
                                     public void done(ParseException e) {
                                         if (e == null){
-                                            Log.d("parse", "uploaded a photo");
                                         } else {
-                                            Log.e("parse", "cannot upload the photo");
                                             photo.setLocalURI(uriString);
                                             photo.savedLocally();
                                         }
                                     }
                                 });
-                            } else {
-                                Log.e("parse", "cannot save ParseFile");
                             }
                         }
                     });

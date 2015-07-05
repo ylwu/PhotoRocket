@@ -4,7 +4,6 @@ package com.yask.android.photorocket;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,15 +24,11 @@ public class PastEventsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d("parse past events", "create view");
         View rootView = inflater.inflate(R.layout.fragment_past_events, container, false);
         getActivity().setTitle("Past Events");
         eventListAdapter = new EventListAdapter(this.getActivity(),PastEventsFragment.this,true);
         eventListAdapter.setTextKey(Event.NAME_KEY);
         final ListView eventListView = (ListView) rootView.findViewById(R.id.listview_past_events);
-        if (eventListView == null){
-            Log.d("parse", "listView null");
-        }
         eventListView.setAdapter(eventListAdapter);
 
         eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

@@ -15,7 +15,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -118,36 +117,26 @@ public class NewEventActivity extends ActionBarActivity{
             @Override
             public void done(ParseException e) {
                 if (e == null){
-                    Log.d("parse NewEventActivity", "event saved locally");
                     event.saveEventually(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
-                            if (e != null){
-                                Log.e("parse error",e.getLocalizedMessage());
-                            } else {
+                            if (e == null){
                                 EventToUpload eventToUpload = new EventToUpload(event.getObjectId(),event.getStartTime(),event.getEndTime());
                                 eventToUpload.pinInBackground(new SaveCallback() {
                                     @Override
                                     public void done(ParseException e) {
-                                        Log.d("parse eventToUpload", "saved");
                                     }
                                 });
                                 UploadAlarmReceiver.setAlarm(getApplicationContext(), endTime, event.getObjectId());
                                 String s = (String) ((TextView) findViewById(R.id.invited)).getText();
                                 String[] ss = s.split("\n");
 
-
-
-                                Log.d("sendinvites", Integer.toString(ss.length));
-                                Log.d("sendinvites", "[" + ss[0] + "]");
                                 if (ss.length > 0 && ! ss[0].equals("")){
                                     sendInvitations(Arrays.asList(ss), event.getObjectId());
-                                    Log.d("sendinvites", "inside");
                                 } else {
                                     Intent i = new Intent(v.getContext(), MainActivity.class);
                                     startActivity(i);
                                 }
-                                Log.d("parse NewEventActivity", "event saved in cloud");
                             }
                         }
                     });
@@ -173,22 +162,16 @@ public class NewEventActivity extends ActionBarActivity{
         point.saveInBackground(new SaveCallback() {
             public void done(ParseException e) {
                 if (e != null) {
-                    Log.e("parse error", e.getLocalizedMessage());
                 } else {
                     UploadAlarmReceiver.setAlarm(getApplicationContext(), endTime, eventId);
                     String s = (String) ((TextView) findViewById(R.id.invited)).getText();
                     String[] ss = s.split("\n");
-
-                    Log.d("sendinvites", Integer.toString(ss.length));
-                    Log.d("sendinvites", "[" + ss[0] + "]");
                     if (ss.length > 0 && ! ss[0].equals("")){
                         sendInvitations(Arrays.asList(ss), eventId);
-                        Log.d("sendinvites", "inside");
                     } else {
                         Intent i = new Intent(v.getContext(), MainActivity.class);
                         startActivity(i);
                     }
-                    Log.d("parse NewEventActivity", "event updated in cloud");
                 }
             }
         });
@@ -396,7 +379,6 @@ public class NewEventActivity extends ActionBarActivity{
 
 
     public void showStartTimePickerDialog(View v) {
-        Log.e("showstarttime", "hereherehere");
         StartTimePickerFragment newFragment = new StartTimePickerFragment();
         newFragment.setV(v);
         newFragment.show(getSupportFragmentManager(), "timePicker");
@@ -423,7 +405,6 @@ public class NewEventActivity extends ActionBarActivity{
         }
 
         public void onTimeSet(TimePicker view, int hr, int min) {
-            Log.d("onstarttimeset", "here");
             TextView st = (TextView) v.findViewById(R.id.startTime);
             startHr = hr;
             startMin = min;

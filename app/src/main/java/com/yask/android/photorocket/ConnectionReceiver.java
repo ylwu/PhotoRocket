@@ -5,16 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
 
 public class ConnectionReceiver extends BroadcastReceiver {
     public ConnectionReceiver() {
     }
     @Override
     public void onReceive(Context context, Intent intent) {
-
-        Log.d(ConnectionReceiver.class.getSimpleName(), "action: "
-                + intent.getAction());
         String action = intent.getAction();
         if (!action.equals(ConnectivityManager.CONNECTIVITY_ACTION))
             return;

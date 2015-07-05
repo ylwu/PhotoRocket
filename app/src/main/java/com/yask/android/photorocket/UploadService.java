@@ -3,7 +3,6 @@ package com.yask.android.photorocket;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.util.Log;
 
 public class UploadService extends Service {
     public UploadService() {
@@ -33,6 +32,5 @@ public class UploadService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d("parse service", "destroyed");
     }
 }

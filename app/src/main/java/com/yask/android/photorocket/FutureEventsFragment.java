@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +48,6 @@ public class FutureEventsFragment extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d("parse future events", "create future view");
 
         // Make user go back and forth between main and past doesn't do weird stuff
 //            getActivity().getSupportFragmentManager().popBackStack("main", FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -60,9 +58,6 @@ public class FutureEventsFragment extends android.support.v4.app.Fragment {
         eventListAdapter.setTextKey(Event.NAME_KEY);
         eventListView = (ListView) rootView.findViewById(R.id.listview_main);
 
-        if (eventListView == null){
-            Log.d("parse", "listView null");
-        }
         eventListView.setAdapter(eventListAdapter);
 
         if (eventListAdapter.getCount() == 0){
@@ -131,9 +126,6 @@ public class FutureEventsFragment extends android.support.v4.app.Fragment {
                     int eehr = ecal.get(Calendar.HOUR_OF_DAY);
                     int eemin = ecal.get(Calendar.MINUTE);
 
-                    Log.d("aaa", scal.toString());
-                    Log.d("bbb", ecal.toString());
-
                     String eestrhr;
                     String eestrmin;
                     String eestrmn;
@@ -167,8 +159,6 @@ public class FutureEventsFragment extends android.support.v4.app.Fragment {
                             .putExtra(Event.ISOCCURING_TEXT, event.isOccuring())
                             .putExtra(Event.ISPAST_TEXT, event.isPast())
                             .putExtra(Event.ISFUTURE_TEXT, event.isFuture());
-                    Log.d("aaa", ssyear + "-" + ssstrmn + "-" + ssstrdt + " " + ssstrhr + ":" + ssstrmin);
-                    Log.d("bbb", eeyear + "-" + eestrmn + "-" + eestrdt + " " + eestrhr + ":" + eestrmin);
                 }
                 startActivity(intent);
             }
@@ -182,7 +172,6 @@ public class FutureEventsFragment extends android.support.v4.app.Fragment {
                     /*+*/
                 Intent i = new Intent(v.getContext(), NewEventActivity.class);
                 startActivity(i);
-//                    startActivity(new Intent(v.getContext(), NewEventActivity.class));
             }
         });
 
@@ -223,7 +212,6 @@ public class FutureEventsFragment extends android.support.v4.app.Fragment {
 
                 // Save to local Parse database
                 ((MainActivity) getActivity()).savePhotoLocally(EVENT_ID, current_image_uri.toString());
-                Log.d("saved photo", current_image_uri.toString());
 
             }
         }
@@ -250,7 +238,6 @@ public class FutureEventsFragment extends android.support.v4.app.Fragment {
         // Create storage directory if it does not exist
         if (!photo_rocket_dir.exists()){
             if (!photo_rocket_dir.mkdirs()){
-                Log.d(APP_NAME, "failed to create directory");
             }
         }
 

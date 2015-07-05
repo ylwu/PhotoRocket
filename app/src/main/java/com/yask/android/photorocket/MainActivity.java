@@ -8,7 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
+
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -86,18 +86,13 @@ public class MainActivity extends ActionBarActivity {
                         @Override
                         public void done(ParseException e) {
                             if (e == null) {
-                                Log.d("parse user", "succesfully add participant");
                                 NotificationAlarmReceiver.setAlarm(getApplicationContext(), event.getStartTime());
                                 UploadAlarmReceiver.setAlarm(getApplicationContext(), event.getEndTime(), event.getObjectId());
                                 syncEventsByCurrentUser(fragment);
-                            } else {
-                                Log.e("parse user", e.getLocalizedMessage());
                             }
                         }
                     });
 
-                } else {
-                    Log.e("parse event search", e.getLocalizedMessage());
                 }
             }
         });
@@ -119,14 +114,9 @@ public class MainActivity extends ActionBarActivity {
                         public void done(ParseException e) {
                             if (e == null) {
                                 refreshFragment(fragment);
-                            } else {
-                                Log.e("parse MainActivity", e.getLocalizedMessage());
                             }
                         }
                     });
-                } else {
-                    Log.e("parse", e.getLocalizedMessage());
-                    Log.e("parse", "cannot retrieve events");
                 }
             }
         });
