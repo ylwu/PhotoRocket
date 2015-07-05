@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -16,7 +15,6 @@ import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -91,12 +89,9 @@ public class PhotosAdapter extends ParseQueryAdapter<Photo>{
 
             // Add and download the image
             ImageView todoImage = (ImageView) v.findViewById(R.id.icon);
-            Log.d("parsePhotosApapter", "find a photo");
             Bitmap bitmap = null;
             if (photo.isSavedInCloud()) {
                 ParseFile imageFile = photo.getParseFile("content");
-                Log.d("parsePhotosApapter", "find a saved photo");
-                Log.d("parsePhotos",photo.getObjectId());
                 if (imageFile != null) {
                     BitmapFactory.Options options = new BitmapFactory.Options();
                     options.inSampleSize = 3;

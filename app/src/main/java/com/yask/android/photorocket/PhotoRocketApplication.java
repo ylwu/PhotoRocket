@@ -1,7 +1,6 @@
 package com.yask.android.photorocket;
 
 import android.app.Application;
-import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.crittercism.app.Crittercism;
@@ -25,7 +24,6 @@ public class PhotoRocketApplication extends Application{
         super.onCreate();
         Fabric.with(this, new Crashlytics());
         ParseCrashReporting.enable(this);
-        Log.d("parse", "start application");
         Crittercism.initialize(getApplicationContext(), "553c471f7365f84f7d3d6fa8");
         ParseObject.registerSubclass(Event.class);
         ParseObject.registerSubclass(Photo.class);
@@ -35,19 +33,11 @@ public class PhotoRocketApplication extends Application{
         Parse.initialize(this, "oAfNdFvHufxJJbgX1577YXmFT531UZxq54UjSJrD", "e53mYyUhmRBEZQi9hJumUK90TTxQJK20sDV5XCiV");
 
         if (ParseUser.getCurrentUser() == null){
-            Log.d("parse user", "creating user for the first time");
             ParseAnonymousUtils.logIn(new LogInCallback() {
                 @Override
                 public void done(ParseUser user, ParseException e) {
-                    if (e != null) {
-                        Log.d("MyApp", "Anonymous login failed.");
-                    } else {
-                        Log.d("MyApp", "Anonymous user logged in.");
-                    }
                 }
             });
-        } else {
-            Log.d("parse user", "getting anoynymous user from app");
         }
     }
 }

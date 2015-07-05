@@ -1,7 +1,6 @@
 package com.yask.android.photorocket;
 
 import android.net.Uri;
-import android.util.Log;
 
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
@@ -37,7 +36,6 @@ public class Photo extends ParseObject{
 
     public byte[] getBytesData() {
         if (getString(LOCAL_IMAGE_URI_KEY) == null){
-            Log.d("parse","no local uri");
         } else {
 
             File f = new File(Uri.parse(getString(LOCAL_IMAGE_URI_KEY)).getPath());
@@ -48,7 +46,6 @@ public class Photo extends ParseObject{
             try {
                 is = new FileInputStream(f);
             } catch (FileNotFoundException e){
-                Log.d("PHOTO_GETBYTES", "File not found: " + e.toString());
             }
 
             byte[] imageArray = new byte[imageLength];

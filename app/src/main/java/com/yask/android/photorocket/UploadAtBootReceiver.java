@@ -3,7 +3,6 @@ package com.yask.android.photorocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -23,7 +22,6 @@ public class UploadAtBootReceiver extends BroadcastReceiver {
         if("android.intent.action.BOOT_COMPLETED".equals(intent.getAction())){
             Calendar c = Calendar.getInstance();
             Date d = c.getTime();
-            Log.d("parse check at upload", "start");
             uploadOldEventsPhotos(d);
             setUploadAlarms(context,d);
             setNotificationAlarms(context,d);
@@ -38,7 +36,6 @@ public class UploadAtBootReceiver extends BroadcastReceiver {
             @Override
             public void done(List<EventToUpload> eventToUploads, ParseException e) {
                 for (EventToUpload eventToUpload: eventToUploads){
-                    Log.d("parse upload", eventToUpload.getEventID());
                     Utils.uploadPhotosToParse(eventToUpload.getEventID());
                 }
             }
@@ -53,7 +50,6 @@ public class UploadAtBootReceiver extends BroadcastReceiver {
             @Override
             public void done(List<EventToUpload> eventToUploads, ParseException e) {
                 for (EventToUpload eventToUpload: eventToUploads){
-                    Log.d("parse setUploadAlarms", eventToUpload.getEventID());
                     UploadAlarmReceiver.setAlarm(context, eventToUpload.getEndTime(),eventToUpload.getEventID());
                 }
             }
@@ -68,7 +64,6 @@ public class UploadAtBootReceiver extends BroadcastReceiver {
             @Override
             public void done(List<EventToUpload> eventToUploads, ParseException e) {
                 for (EventToUpload eventToUpload: eventToUploads){
-                    Log.d("parse setNotifAlarms", eventToUpload.getEventID());
                     NotificationAlarmReceiver.setAlarm(context, eventToUpload.getStartTime());
                 }
             }
