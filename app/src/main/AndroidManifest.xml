@@ -89,6 +89,9 @@
             android:name=".PhotoDetailActivity"
             android:label="@string/title_activity_photo_detail" >
         </activity>
+        <meta-data
+            android:name="com.crashlytics.ApiKey"
+            android:value="b8172822e6f61e22399dbb3450d620e5425446f4" />
     </application>
 
 </manifest>
